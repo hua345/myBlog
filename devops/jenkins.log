@@ -1,0 +1,95 @@
+Waiting for Jenkins to finish collecting data
+[JENKINS] Archiving /var/jenkins_home/workspace/dev-scms-server_test03/pom.xml to com.szkunton.scms/scms-server/0.0.1-SNAPSHOT/scms-server-0.0.1-SNAPSHOT.pom
+[JENKINS] Archiving /var/jenkins_home/workspace/dev-scms-server_test03/target/scms-server.jar to com.szkunton.scms/scms-server/0.0.1-SNAPSHOT/scms-server-0.0.1-SNAPSHOT.jar
+channel stopped
+SSH: Connecting from host [0e3bd89ce0b3]
+SSH: Connecting with configuration [阿里云test03] ...
+SSH: EXEC: STDOUT/STDERR from command [ls -lh scms-server/] ...
+total 98M
+-rw-r--r-- 1 root   root   251 Nov 19 13:47 Dockerfile
+-rw-rw-r-- 1 kunton kunton 98M Nov 19 14:01 scms-server.jar
+SSH: EXEC: completed after 200 ms
+SSH: Disconnecting configuration [阿里云test03] ...
+SSH: Transferred 1 file(s)
+[SSH] script:
+PATH="/var/jenkins_home/tools/hudson.model.JDK/jdk1.8_172/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+ENV="DEV"
+JOB_NAME="dev-scms-server_test03"
+
+JOB_NAME=scms-server
+JOB_PATH=/home/kunton/$JOB_NAME
+cd $JOB_PATH
+
+rm -rf  Dockerfile
+
+if [ ! -f Dockerfile ]; then 
+  echo "FROM openjdk:8-jre" >> Dockerfile
+  echo "COPY $JOB_NAME.jar app.jar" >> Dockerfile
+echo "ENV TZ='Asia/Shanghai'" >> Dockerfile
+echo "RUN apt-get install -y libfontconfig" >> Dockerfile
+echo "ENTRYPOINT java -jar app.jar -Xmx1G -Xms1G -XX:+UseG1GC -XX:MaxGCPauseMillis=20 --spring.profiles.active=$ENV  --XX:+HeapDumpOnOutOfMemoryError" >> Dockerfile
+fi 
+
+docker rmi  $JOB_NAME:old  &> /dev/null
+
+echo  docker stop $JOB_NAME
+docker stop $JOB_NAME  
+
+echo docker rm $JOB_NAME
+docker rm  -v  $JOB_NAME
+
+docker tag $JOB_NAME  ${JOB_NAME}:old
+docker rmi  $JOB_NAME
+
+echo  docker build $JOB_NAME
+docker build -t $JOB_NAME .
+
+
+echo docker run $JOB_NAME
+docker run -d -p 8318:8318 -p 9999:9999  --name $JOB_NAME --restart always -v /kunton/server/logs/$JOB_NAME:/logs  $JOB_NAME
+echo $ENV
+docker ps
+hostname
+
+[SSH] executing...
+docker stop scms-server
+scms-server
+docker rm scms-server
+scms-server
+Untagged: scms-server:latest
+docker build scms-server
+Sending build context to Docker daemon 557.1 kB
+Sending build context to Docker daemon  19.5 MB
+Sending build context to Docker daemon 39.55 MB
+Sending build context to Docker daemon 59.05 MB
+Sending build context to Docker daemon 80.22 MB
+Sending build context to Docker daemon 100.3 MB
+Sending build context to Docker daemon 102.4 MB
+
+
+Step 1/5 : FROM openjdk:8-jre
+ ---> f44b742ffc37
+Step 2/5 : COPY scms-server.jar app.jar
+ ---> f7015e0ccc89
+Removing intermediate container 1da25fb920fa
+Step 3/5 : ENV TZ 'Asia/Shanghai'
+ ---> Running in 26f31e9555c8
+ ---> 8758496290c6
+Removing intermediate container 26f31e9555c8
+Step 4/5 : RUN apt-get install -y libfontconfig
+ ---> Running in c826075c027d
+
+[91m[0mReading package lists...
+Building dependency tree...
+Reading state information...
+libfontconfig1 is already the newest version (2.11.0-6.7+b1).
+libfontconfig1 set to manually installed.
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+ ---> 5e95a53abb4e
+Removing intermediate container c826075c027d
+Step 5/5 : ENTRYPOINT java -jar app.jar -Xmx1G -Xms1G -XX:+UseG1GC -XX:MaxGCPauseMillis=20 --spring.profiles.active=DEV  --XX:+HeapDumpOnOutOfMemoryError
+ ---> Running in 04d52f718bb6
+ ---> c5c5658b949d
+Removing intermediate container 04d52f718bb6
+Successfully built c5c5658b949d
+docker run scms-server

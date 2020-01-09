@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="80px" height="80px" viewBox="0 0 80 80" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.2 (67145) - http://www.bohemiancoding.com/sketch -->
+    <title>icon-filebeat-bb</title>
+    <desc>Created with Sketch.</desc>
+    <g id="icon-filebeat-bb" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="filebeat" transform="translate(18.125000, 15.000000)">
+            <rect id="Rectangle" fill="#00BFB3" x="9.375" y="28.125" width="25" height="3.125"></rect>
+            <rect id="Rectangle" fill="#00BFB3" x="9.375" y="20.3125" width="14.0625" height="3.125"></rect>
+            <rect id="Rectangle" fill="#00BFB3" x="9.375" y="35.9375" width="25" height="3.125"></rect>
+            <path d="M30.328125,0 L4.6875,0 C2.09866524,-1.5852041e-16 6.9388939e-16,2.09866524 0,4.6875 L0,45.3125 C6.9388939e-16,47.9013348 2.09866524,50 4.6875,50 L39.0625,50 C41.6513348,50 43.75,47.9013348 43.75,45.3125 L43.75,13.421875 L30.328125,0 Z M31.25,5.328125 L38.421875,12.5 L31.25,12.5 L31.25,5.328125 Z M39.0625,46.875 L4.6875,46.875 C3.82455508,46.875 3.125,46.1754449 3.125,45.3125 L3.125,4.6875 C3.125,3.82455508 3.82455508,3.125 4.6875,3.125 L28.125,3.125 L28.125,15.625 L40.625,15.625 L40.625,45.3125 C40.625,46.1754449 39.9254449,46.875 39.0625,46.875 Z" id="Shape" fill="#535966" fill-rule="nonzero"></path>
+        </g>
+    </g>
+</svg>

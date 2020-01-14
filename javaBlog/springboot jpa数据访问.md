@@ -121,6 +121,15 @@ Specification<ErrorRender> cation = (root, criteriaQuery, builder) -> {
 
 ## JPA 对 SQL 支持
 
+### 使用原生 SQL
+
+JPA使用原生SQL语句时，需要`nativeQuery = true`
+
+```java
+@Query(value = "update student set deleted = '1' where id = :id",nativeQuery = true)
+void logicDeleteById(Long id);
+```
+
 ### 删除数据(delete)(HQL)
 
 ```java

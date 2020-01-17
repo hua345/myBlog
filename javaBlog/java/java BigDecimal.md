@@ -69,6 +69,16 @@ BigDecimal interest = loanAmount.multiply(interestRate);
 System.out.println("贷款金额: " + currency.format(loanAmount));
 System.out.println("利率: " + percent.format(interestRate));
 System.out.println("利息: " + currency.format(interest));
+// 商品单价
+BigDecimal productPrice = new BigDecimal("6.8400");
+// 商品税率
+BigDecimal productTaxRate = new BigDecimal("0.1300");
+// 商品含税价格
+BigDecimal productTaxPrice = productPrice.add(productPrice.multiply(productTaxRate))
+        .setScale(4, BigDecimal.ROUND_HALF_UP);
+System.out.println("商品单价: " + productPrice);
+System.out.println("商品税率: " + productTaxRate);
+System.out.println("商品含税价格: " + productTaxPrice);
 ```
 
 ```log

@@ -43,7 +43,7 @@
 
 ```java
 /**
- * @author CHENJIANHUA
+ * @author chenjianhua
  * @date ${DATE} ${TIME}
  */
 ```

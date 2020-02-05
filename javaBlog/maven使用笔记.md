@@ -1,8 +1,10 @@
-### 下载maven
+# 下载maven
 
-[http://maven.apache.org/download.cgi](http://maven.apache.org/download.cgi)
+- [http://maven.apache.org/download.cgi](http://maven.apache.org/download.cgi)
 
-### 安装java
+## 安装java
+
+- [http://jdk.java.net/](http://jdk.java.net/)
 
 ```bash
 sudo apt-get install default-jre

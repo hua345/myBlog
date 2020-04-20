@@ -35,7 +35,13 @@ class MyThread implements Runnable {
 }
 ```
 
-## ReentrantLock 公平性的设置
+## ReentrantLock
+
+由于`ReentrantLock`是`java.util.concurrent`包下面提供的一套互斥锁，相比`Synchronized`类提供了一些高级的功能，主要有一下三项：
+
+- `等待可中断`，持有锁的线程长期不释放的时候，正在等待的线程可以选择放弃等待，这相当于`Synchronized`来说可以避免出现死锁的情况。通过`lock.lockInterruptibly()`来实现这个机制。
+
+- `公平锁`，多个线程等待同一个锁时，必须按照申请锁的时间顺序获得锁，`Synchronized`锁非公平锁，ReentrantLock默认的构造函数是创建的非公平锁，可以通过参数true设为公平锁，但公平锁表现的性能不是很好。
 
 ```java
 ReentrantLock fairLock = new ReentrantLock(true);
@@ -45,6 +51,10 @@ ReentrantLock fairLock = new ReentrantLock(true);
 // 非公平锁：抢占的顺序不一定，看运气；
 // synchronized是非公平锁。
 ```
+
+## ReenTrantLock实现的原理
+
+简单来说，`ReenTrantLock`的实现是一种自旋锁，通过循环调用`CAS`操作来实现加锁。它的性能比较好也是因为避免了使线程进入内核态的阻塞状态。
 
 ## 参考
 

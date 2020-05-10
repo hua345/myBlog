@@ -15,7 +15,7 @@
 `Synchronized`经过编译后，会在同步块前后分别形成`monitorenter`和`monitorexit`两个字节码指令，在执行`monitorenter`指令时，首先要尝试获取对象锁，如果对象没有别锁定，或者当前已经拥有这个对象锁，把锁的计数器加 1，相应的在执行`monitorexit`指令时，会将计数器减 1，当计数器为 0 时，锁就被释放了。如果获取锁失败，那当前线程就要阻塞，直到对象锁被另一个线程释放为止。
 
 ```java
-public class SynDemo{
+public class SyncDemo{
 
     public static void main(String[] arg){
         Runnable t1=new MyThread();

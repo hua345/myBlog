@@ -101,7 +101,23 @@ The following plugins have been enabled:
 Applying plugin configuration to rabbit@consul01... started 6 plugins.
 ```
 
-这个命令的作用是安装RabbitMq的一个管理插件，这样，我们就可以通过在浏览器访问 `http://ip:15672` 时，进入一个管理界面。
+这个命令的作用是安装RabbitMq的一个管理插件，这样，我们就可以通过在浏览器访问 `http://ip:15672` 时，进入一个管理界面,默认用户名密码都是`guest`。
+
+### 开放端口
+
+```bash
+# 15672: RabbitMQ 的 Web 管理界面端口
+➜  rabbitmq firewall-cmd --zone=public --add-port=15672/tcp --permanent
+success
+# 5672, 5671: AMQP协议端口
+➜  rabbitmq firewall-cmd --zone=public --add-port=5672/tcp --permanent
+success
+➜  rabbitmq firewall-cmd --zone=public --add-port=5671/tcp --permanent
+success
+# 重新载入防火墙配置，当前连接不中断
+➜  rabbitmq firewall-cmd --reload
+success
+```
 
 ![rabbitmq00](./img/rabbitmq00.png)
 

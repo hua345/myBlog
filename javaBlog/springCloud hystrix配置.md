@@ -9,10 +9,10 @@ feign.hystrix.enabled=true
 # 命令执行(execution)配置
 # 隔离策略,默认THREAD
 hystrix.command.default.execution.isolation.strategy=THREAD
-# 是否允许超时，默认true。如果enabled设置为false，则请求超时交给ribbon控，`timeoutInMilliseconds`则无法控制，如果为true，则`ReadTimeout`和`timeoutInMilliseconds`谁小谁控制
-hystrix.command.default.execution.timeout.enabled=true
+# 是否允许超时，默认true。如果enabled设置为false，则请求超时交给ribbon控，`timeoutInMilliseconds`则无法控制，
+# 如果为true，并同时配置了 Ribbon 和 Hystrix 的超时时间，则`ReadTimeout`和`timeoutInMilliseconds`谁小谁控制
 # 超时时间上限，默认1000
-hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds=30000
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds=60000
 #feign熔断超时总时间计算公式（黄海平 2020-06-08）
 # 总时间(feignTimeTotal) = ReadTimeout * (MaxAutoRetries + 1) * (MaxAutoRetriesNextServer * 2)
 # 注：hystrix.command.default.execution.timeout.enabled=true timeoutInMilliseconds的时间值必须要比feignTimeTotal大，否则优先于hystrix熔断

@@ -161,6 +161,10 @@ Set<Long> set = bookList.stream().map(Book::getId).collect(Collectors.toSet());
 // 转换成Map
 Map<String, Book> map = bookList.stream().collect(Collectors.toMap(Book::getName, Function.identity()));
 Map<String, Long> nameMap = bookList.stream().collect(Collectors.toMap(Book::getName,Book::getId));
+
+// toMap 如果集合对象有重复的key，会报错Duplicate key ....
+// 可以用 (k1,k2)->k1 来设置，如果有重复的key,则保留key1,舍弃key2
+Map<String, Book> nameMap = bookList.stream().collect(Collectors.toMap(Book::getId,a -> a,(k1,k2)->k1)));
 ```
 
 ```log

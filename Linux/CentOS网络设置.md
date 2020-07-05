@@ -65,18 +65,45 @@ NETMASK=255.255.255.0
 GATEWAY=192.168.137.1
 DNS1=233.5.5.5
 DNS2=8.8.8.8
+
+ONBOOT=yes
 ```
 
-### 3.5 设置静态 IP 后 ssh 访问慢的解决方法
+重启虚拟机`reboot`
+
+### 3.5 查看网络和路由
 
 ```bash
-vi /etc/ssh/sshd_config
-#找到如下配置节点：
-#UseDNS yes
-#改为
-UseDNS no
-#启ssh服务：
-systemctl restart sshd
+[root@loveFang network-scripts]# nmcli
+enp0s3: 已连接 到 enp0s3
+        "Intel 82540EM"
+        ethernet (e1000), 08:00:27:EC:39:11, 硬件, mtu 1500
+        ip4 默认
+        inet4 10.0.2.4/24
+        route4 0.0.0.0/0
+        route4 10.0.2.0/24
+        inet6 fe80::d4d6:1507:d0be:61c7/64
+        route6 fe80::/64
+        route6 ff00::/8
+
+enp0s8: 已连接 到 enp0s8
+        "Intel 82540EM"
+        ethernet (e1000), 08:00:27:A2:F4:17, 硬件, mtu 1500
+        inet4 192.168.137.102/24
+        route4 192.168.137.0/24
+        route4 0.0.0.0/0
+        inet6 fe80::64d2:6461:8f1e:9537/64
+        route6 fe80::/64
+        route6 ff00::/8
+
+[root@loveFang network-scripts]# route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         10.0.2.1        0.0.0.0         UG    100    0        0 enp0s3
+0.0.0.0         192.168.137.101 0.0.0.0         UG    101    0        0 enp0s8
+10.0.2.0        0.0.0.0         255.255.255.0   U     100    0        0 enp0s3
+192.168.137.0   0.0.0.0         255.255.255.0   U     101    0        0 enp0s8
+
 ```
 
 ## 4.防火墙设置
@@ -89,4 +116,18 @@ firewall-cmd --zone=public --add-port=80/tcp --permanent
 firewall-cmd --zone=public --add-port=22/tcp --permanent
 # 重新载入防火墙配置，当前连接不中断
 firewall-cmd --reload
+```
+
+## 其他
+
+### 5.1 设置静态 IP 后 ssh 访问慢的解决方法
+
+```bash
+vi /etc/ssh/sshd_config
+#找到如下配置节点：
+#UseDNS yes
+#改为
+UseDNS no
+#启ssh服务：
+systemctl restart sshd
 ```

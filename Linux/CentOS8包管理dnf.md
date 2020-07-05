@@ -7,10 +7,10 @@ centos 8 默认是会读取centos.org的mirrorlist的，所以一般来说是不
 
 ```bash
 cd /etc/yum.repos.d
-#备份
-cp CentOS-Base.repo CentOS-Base.repo.bak
-cp CentOS-AppStream.repo CentOS-AppStream.repo.bak
-cp CentOS-Extras.repo CentOS-Extras.repo.bak
+# 备份
+mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
+# CentOS 8
+curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-8.repo
 
 sed -i 's/mirrorlist=/#mirrorlist=/g' CentOS-Base.repo CentOS-AppStream.repo CentOS-Extras.repo
 sed -i 's/#baseurl=/baseurl=/g' CentOS-Base.repo CentOS-AppStream.repo CentOS-Extras.repo

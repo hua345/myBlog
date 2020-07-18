@@ -96,13 +96,22 @@ enp0s8: 已连接 到 enp0s8
         route6 fe80::/64
         route6 ff00::/8
 
-[root@loveFang network-scripts]# route -n
+[root@loveFang ~]# route -n
 Kernel IP routing table
 Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
-0.0.0.0         10.0.2.1        0.0.0.0         UG    100    0        0 enp0s3
-0.0.0.0         192.168.137.101 0.0.0.0         UG    101    0        0 enp0s8
-10.0.2.0        0.0.0.0         255.255.255.0   U     100    0        0 enp0s3
-192.168.137.0   0.0.0.0         255.255.255.0   U     101    0        0 enp0s8
+0.0.0.0         192.168.137.1   0.0.0.0         UG    100    0        0 enp0s3
+0.0.0.0         10.0.2.1        0.0.0.0         UG    101    0        0 enp0s8
+10.0.2.0        0.0.0.0         255.255.255.0   U     101    0        0 enp0s8
+192.168.137.0   0.0.0.0         255.255.255.0   U     100    0        0 enp0s3
+[root@loveFang ~]# route add default gw 10.0.2.1
+[root@loveFang ~]# route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         10.0.2.1        0.0.0.0         UG    0      0        0 enp0s8
+0.0.0.0         192.168.137.1   0.0.0.0         UG    100    0        0 enp0s3
+0.0.0.0         10.0.2.1        0.0.0.0         UG    101    0        0 enp0s8
+10.0.2.0        0.0.0.0         255.255.255.0   U     101    0        0 enp0s8
+192.168.137.0   0.0.0.0         255.255.255.0   U     100    0        0 enp0s3
 
 ```
 

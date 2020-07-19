@@ -13,8 +13,8 @@ mkdir rabbitmq && cd rabbitmq
 wget https://www.rabbitmq.com/releases/erlang/erlang-19.0.4-1.el7.centos.x86_64.rpm
 wget https://www.rabbitmq.com/releases/rabbitmq-server/v3.6.15/rabbitmq-server-3.6.15-1.el7.noarch.rpm
 
+dnf install socat compat-openssl10 libnsl ncurses-compat -y
 rpm -ivh erlang-19.0.4-1.el7.centos.x86_64.rpm
-yum install socat
 rpm -ivh rabbitmq-server-3.6.15-1.el7.noarch.rpm
 ```
 
@@ -30,7 +30,7 @@ systemctl status rabbitmq-server.service
 ## 查看rabbitmq状态
 
 ```bash
-➜  rabbitmq rabbitmqctl status
+➜  rabbitmqctl status
 
 Status of node rabbit@consul01
 [{pid,18265},
@@ -146,4 +146,3 @@ success
 ```
 
 ![rabbitmq01](./img/rabbitmq01.png)
-

@@ -10,10 +10,9 @@
 
 ```bash
 # wget http://mirrors.ustc.edu.cn/mysql-repo/mysql80-community-release-el7-3.noarch.rpm
-wget https://repo.mysql.com//mysql80-community-release-el7-3.noarch.rpm
-
+wget https://repo.mysql.com//mysql80-community-release-el8-1.noarch.rpm
 # 安装rpm包
-rpm -ivh mysql80-community-release-el7-3.noarch.rpm
+rpm -ivh mysql80-community-release-el8-1.noarch.rpm
 
 # 清除所有的缓存文件
 yum clean all
@@ -91,7 +90,15 @@ mysql> ALTER USER 'root'@'localhost' IDENTIFIED BY 'MyNewPass4!';
 Query OK, 0 rows affected (0.01 sec)
 # 查看验证密码规则
 mysql> show variables like 'validate_password%';
-
+#允许root远程登录
+mysql> CREATE USER 'root'@'%' IDENTIFIED BY 'password';
+mysql> GRANT ALL PRIVILEGES ON *.* TO 'root'@'%'WITH GRANT OPTION;
+mysql> FLUSH PRIVILEGES;
+# 设置防火墙
+[root@loveFang ~]# firewall-cmd --zone=public --add-port=3306/tcp --permanent
+success
+[root@loveFang ~]# firewall-cmd --reload
+success
 # 添加远程登录用户
-mysql> GRANT ALL PRIVILEGES ON *.* TO 'caoxiaobo'@'%' IDENTIFIED BY 'Caoxiaobo0917!' WITH GRANT OPTION;
+mysql> GRANT ALL PRIVILEGES ON *.* TO 'testUsre'@'%' IDENTIFIED BY 'testPassword' WITH GRANT OPTION;
 ```

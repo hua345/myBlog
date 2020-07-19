@@ -104,6 +104,7 @@ Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 10.0.2.0        0.0.0.0         255.255.255.0   U     101    0        0 enp0s8
 192.168.137.0   0.0.0.0         255.255.255.0   U     100    0        0 enp0s3
 [root@loveFang ~]# route add default gw 10.0.2.1
+# VirtualBox `第一块网卡为Nat,第二块网卡为Host-only`
 [root@loveFang ~]# route -n
 Kernel IP routing table
 Destination     Gateway         Genmask         Flags Metric Ref    Use Iface

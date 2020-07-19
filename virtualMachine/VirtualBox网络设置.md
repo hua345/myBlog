@@ -1,11 +1,11 @@
-# VirtualBox 的提供了四种网络接入模式
+# 1.VirtualBox 的提供了四种网络接入模式
 
 - `NAT` 网络地址转换模式(NAT,Network Address Translation)
 - `Bridged Adapter` 桥接模式
 - `Internal` 内部网络模式
 - `Host-only Adapter` 主机模式
 
-## NAT 模式
+## 1.1NAT 模式
 
 NAT 模式是最简单的实现虚拟机上网的方式
 
@@ -14,7 +14,7 @@ NAT 模式是最简单的实现虚拟机上网的方式
 - 虚拟机可以 ping 通主机（此时 ping 虚拟机的网关，即是 ping 主机）
 - 主机不能 ping 通虚拟机
 
-## Bridged Adapter 模式（桥接模式）
+## 1.2Bridged Adapter 模式（桥接模式）
 
 它使得虚拟机能被分配到一个网络中独立的 IP，所有网络功能完全和在网络中的真实机器一样
 
@@ -32,7 +32,7 @@ NAT 模式是最简单的实现虚拟机上网的方式
 
 ![virtualbox_Bridged](img/virtualbox/virtualbox_Bridged.png)
 
-## Host-only Adapter 模式
+## 1.3Host-only Adapter 模式
 
 我们可以理解为 Vbox 在主机中模拟出一张专供虚拟机使用的网卡，所有虚拟机都是连接到该网卡上的，我们可以通过设置这张网卡来实现上网及其他很多功能，比如（网卡共享、网卡桥接等）。
 
@@ -51,19 +51,19 @@ NAT 模式是最简单的实现虚拟机上网的方式
 
 ![virtualbox_host](img/virtualbox/virtualbox_host.png)
 
-## 让虚拟机又能访问外网又可以与主机对话
+## 2.让虚拟机又能访问外网又可以与主机对话
 
 要满足虚拟机能访问外网，又能与主机沟通，就需要两块网卡。所以我们要在 Virtualbox 中给它设置两个 Adapter（网卡），然后设置为：
 
 > NAT + Host-only
 
-### Host-only 网络设置
+### 2.1.4Host-only 网络设置
 
 `管理 -> 主机网络管理`
 
 ![virtualbox_host_network](img/virtualbox/virtualbox_host_network.png)
 
-### NAT 网络设置
+### 2.2 NAT 网络设置
 
 `管理 -> 全局设定 -> 网络 -> 添加Nat`
 
@@ -71,13 +71,13 @@ NAT 模式是最简单的实现虚拟机上网的方式
 
 ![virtual_nat02](img/virtualbox/virtual_nat02.png)
 
-### 虚拟机设置
+### 2.3 虚拟机设置
 
 `第一块网卡为Nat,第二块网卡为Host-only`
 
 ![virtualbox_network_setting](./img/virtualbox/virtualbox_network_setting.png)
 
-## 查看机器信息
+## 2.4查看机器信息
 
 ```bash
 [root@fangfang ~]# hostnamectl status
@@ -93,7 +93,7 @@ NAT 模式是最简单的实现虚拟机上网的方式
       Architecture: x86-64
 ```
 
-### 查看路由信息和网卡信息
+### 2.5查看路由信息和网卡信息
 
 ```bash
 [root@fangfang ~]# ip route show
@@ -123,7 +123,7 @@ enp0s8: 已连接 to 有线连接 1
         route6 ff00::/8
 ```
 
-### 配置网卡
+### 2.6配置网卡
 
 ```conf
 cd /etc/sysconfig/network-scripts/
@@ -146,36 +146,4 @@ ONBOOT="yes"
 
 # 重启虚拟机
 reboot
-```
-
-## host-only 模式连接外网
-
-### 第一张网卡设置为`host-only`
-
-![virtualbox_network_setting2](img/virtualbox/virtualbox_network_setting2.png)
-
-### 开启网络共享
-
-![windows_network](img/virtualbox/windows_network.png)
-
-`右击可以连接外网的网卡-->属性-->共享-->勾选Internet连接共享-->选择共享的网卡`
-
-![windows_network](img/virtualbox/windows_network2.png)
-
-```bash
-[root@fangfang ~]# ip route show
-default via 192.168.137.2 dev enp0s3 proto static metric 100
-192.168.137.0/24 dev enp0s3 proto kernel scope link src 192.168.137.128 metric 100
-
-[root@fangfang ~]# nmcli
-enp0s3: 已连接 to enp0s3
-        "Intel 82540EM"
-        ethernet (e1000), 08:00:27:53:25:F8, 硬件, mtu 1500
-        ip4 默认
-        inet4 192.168.137.128/24
-        route4 192.168.137.0/24
-        route4 0.0.0.0/0
-        inet6 fe80::99b:e937:38f:24b4/64
-        route6 fe80::/64
-        route6 ff00::/8
 ```

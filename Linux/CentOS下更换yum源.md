@@ -10,14 +10,12 @@ cd /etc/yum.repos.d
 mv CentOS-Base.repo CentOS-Base.repo.bk
 ```
 
-根据 [wiki.ubuntu.org.cn/源列表](http://wiki.ubuntu.org.cn/%E6%BA%90%E5%88%97%E8%A1%A8) 的镜像地址列表,找一个喜欢的镜像源。
-[http://mirrors.aliyun.com/](http://mirrors.aliyun.com/)
+[https://developer.aliyun.com/mirror/](https://developer.aliyun.com/mirror/)
 
-[http://mirrors.aliyun.com/help/centos](http://mirrors.aliyun.com/help/centos)
-下载新的CentOS-Base.repo
+下载新的`CentOS-Base.repo`
 
 ```bash
-wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
+curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-8.repo
 ```
 
 ```bash

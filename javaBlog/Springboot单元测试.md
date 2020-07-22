@@ -1,12 +1,15 @@
-#### 参考
+# 参考
+
 - [Testing the Web Layer](https://spring.io/guides/gs/testing-web/)
 - [https://github.com/spring-guides/gs-testing-web](https://github.com/spring-guides/gs-testing-web)
 
-#### 1. 创建简单controller类
-```
+## 1. 创建简单 controller 类
+
+```java
 src/main/java/hello/HomeController.java
 ```
-```
+
+```java
 package hello;
 
 import org.springframework.stereotype.Controller;
@@ -23,11 +26,14 @@ public class HomeController {
 
 }
 ```
-#### 2. 创建启动类
-```
+
+## 2. 创建启动类
+
+```java
 src/main/java/hello/Application.java
 ```
-```
+
+```java
 package hello;
 
 import org.springframework.boot.SpringApplication;
@@ -41,8 +47,10 @@ public class Application {
     }
 }
 ```
-#### 3. 添加依赖
-```
+
+## 3. 添加依赖
+
+```java
 #maven
 <dependency>
     <groupId>org.springframework.boot</groupId>
@@ -53,18 +61,21 @@ public class Application {
 #gradle
 testCompile("org.springframework.boot:spring-boot-starter-test")
 ```
-#### 4.1 创建测试用例
+
+## 4.1 创建测试用例
+
 - `@RunWith` and `@SpringBootTest`注解测试类
 - `@Test`注解一般测试用例
 - `@Test(expected = Exception.class)`测试方法期望得到的异常类，
-如果方法执行没有抛出指定的异常，则测试失败
+  如果方法执行没有抛出指定的异常，则测试失败
 - `@Before`在每个测试方法前执行，一般用来初始化方法
 - `@After`在每个测试方法后执行，在方法执行完成后要做的事情
-```
+
+```java
 src/test/java/hello/ContextLoadTest.java
 ```
 
-```
+```java
 package hello;
 
 import org.junit.After;
@@ -99,10 +110,14 @@ public class ContextLoadTest {
     }
 }
 ```
-`@SpringBootTest`注解告诉springboot去哪寻找主要配置类(用@SpringBootApplication注解的类)
-#### 4.2
+
+`@SpringBootTest`注解告诉 springboot 去哪寻找主要配置类(用@SpringBootApplication 注解的类)
+
+## 4.2
+
 我们发现`SpringRunner`底层使用的是`JUnit4`
-```
+
+```java
 /**
  * <p><strong>NOTE:</strong> This class requires JUnit 4.12 or higher.
  *
@@ -114,11 +129,14 @@ public class ContextLoadTest {
  */
 public final class SpringRunner extends SpringJUnit4ClassRunner {
 ```
-#### 5. Http请求测试用例
+
+## 5. Http 请求测试用例
+
 - `@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)`
-随机生成测试启动的端口
+  随机生成测试启动的端口
 - `@LocalServerPort`注入获取随机生成的端口
-```
+
+```java
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -146,7 +164,7 @@ public class HttpRequestTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
-    
+
     @Test
     public void greetingShouldReturnDefaultMessage() throws Exception {
         String responseStr = this.restTemplate.getForObject("http://localhost:" + port + GREETING_URL,
@@ -155,7 +173,9 @@ public class HttpRequestTest {
     }
 }
 ```
-#### idea设置
+
+## idea 设置
+
 - `settings -> Gradle -> 勾选Create directories for empty content roots automatically`
 - `Build and run using`选择`gradle`
 - `Run tests using`选择`gradle`

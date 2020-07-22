@@ -1,9 +1,9 @@
-# SQL优化
+# SQL 优化
 
-- 由于InnoDB,使用B+树索引,尽量使用自增Long类型作为主键
+- 由于 InnoDB,使用 B+树索引,尽量使用自增 Long 类型作为主键
 - 防止因字段类型不同造成的隐式转换，导致索引失效
-- 创建合适的索引优化查询，但索引数量最好不要超过5个
-- 查询语句中不要使用 *
+- 创建合适的索引优化查询，但索引数量最好不要超过 5 个
+- 查询语句中不要使用 \*
 
 ## 1.业务上具有唯一特性的字段，即使是组合字段，也必须建成唯一索引
 
@@ -23,17 +23,17 @@
 
 ## 4.建组合索引的时候，区分度最高的在最左边
 
->正例： 如果 where a=? and b=?， a 列的几乎接近于唯一值，那么只需要单建 idx_a 索引即可。
+> 正例： 如果 where a=? and b=?， a 列的几乎接近于唯一值，那么只需要单建 idx_a 索引即可。
 
 说明： 存在非等号和等号混合判断条件时，在建索引时，请把等号条件的列前置。如： where c>? and d=?
 那么即使 c 的区分度更高，也必须把 d 放在索引的最前列， 即建立组合索引 idx_d_c。
 
-## 5.合理使用like模糊查询
+## 5.合理使用 like 模糊查询
 
 > 【强制】 页面搜索严禁左模糊或者全模糊，如果需要请走搜索引擎来解决。
-说明： 索引文件具有 B-Tree 的最左前缀匹配特性，如果左边的值未确定，那么无法使用此索引。
+> 说明： 索引文件具有 B-Tree 的最左前缀匹配特性，如果左边的值未确定，那么无法使用此索引。
 
-可以在页面上对小表进行模糊查询，得到主键Id后再精确查询大表
+可以在页面上对小表进行模糊查询，得到主键 Id 后再精确查询大表
 
 ```sql
 select id,name from student where name like '%芳%'
@@ -45,15 +45,15 @@ select id,name from student where name like '%芳%' --会造成全表扫描
 select id,name from student where name like '芳%' --不会造成全表扫描
 ```
 
-## 6.limit分页优化
+## 6.limit 分页优化
 
 > 利用延迟关联或者子查询优化超多分页场景。
-说明： MySQL 并不是跳过 offset 行，而是取 offset+N 行，然后返回放弃前 offset 行，返回 N 行，那当
-offset 特别大的时候，效率就非常的低下，要么控制返回的总页数，要么对超过特定阈值的页数进行 SQL
-改写。
+> 说明： MySQL 并不是跳过 offset 行，而是取 offset+N 行，然后返回放弃前 offset 行，返回 N 行，那当
+> offset 特别大的时候，效率就非常的低下，要么控制返回的总页数，要么对超过特定阈值的页数进行 SQL
+> 改写。
 
 正例： 先快速定位需要获取的 id 段，然后再关联：
-SELECT a.* FROM 表 1 a, (select id from 表 1 where 条件 LIMIT 100000,20 ) b where a.id=b.id
+SELECT a.\* FROM 表 1 a, (select id from 表 1 where 条件 LIMIT 100000,20 ) b where a.id=b.id
 
 ```sql
 -- 执行成功，当前返回 [10] 行，耗时 [85ms.]
@@ -66,7 +66,7 @@ SELECT a.id,a.name,a.create_at FROM big_table a, (select id from big_table ORDER
 -- create_at已经创建索引的情况下
 ```
 
-## 7.避免SQL中对where字段进行函数转换或表达式计算
+## 7.避免 SQL 中对 where 字段进行函数转换或表达式计算
 
 ```sql
 explain select * from student WHERE id = 10
@@ -76,22 +76,7 @@ explain select * from student WHERE id = 10
 select_type:SIMPLE type:const rows:1
 ```
 
-## 8. 表字符集需要保存一致
-
-```sql
--- 查询表字符集
-show table status from 库名 like  表名;
--- 查询列字符集
-show full columns from 表名;
--- 查询字符集有哪些表
-select TABLE_SCHEMA,TABLE_NAME,TABLE_COLLATION from information_schema.tables where table_collation = 'utf8mb4_0900_ai_ci';
--- 修改字符集
-ALTER TABLE 表名 DEFAULT CHARACTER SET utf8mb4 COLLATE 'utf8mb4_0900_ai_ci';
-```
-
-## `union all` 或 `union`代替`or`
-
 ## 参考
 
 - [阿里《Java 开发手册》](https://github.com/alibaba/p3c)
-- [Sql优化总结](https://www.cnblogs.com/joeyJss/p/11096597.html)
+- [Sql 优化总结](https://www.cnblogs.com/joeyJss/p/11096597.html)

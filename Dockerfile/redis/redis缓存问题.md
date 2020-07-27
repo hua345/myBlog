@@ -3,6 +3,7 @@
 - [CS-Notes 缓存](https://github.com/CyC2018/CS-Notes/blob/master/notes/%E7%BC%93%E5%AD%98.md)
 - [看完这篇Redis缓存三大问题，保你面试能造火箭，工作能拧螺丝。](https://juejin.im/post/5edceb206fb9a047a644684f)
 - [Redis缓存如何保证一致性](https://www.cnblogs.com/AshOfTime/p/10815593.html)
+- [Redis 缓存雪崩、击穿、穿透](https://segmentfault.com/a/1190000022029639)
 
 ## 1.缓存穿透
 

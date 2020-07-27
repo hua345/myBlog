@@ -3,13 +3,13 @@
 - [http://kafka.apache.org/](http://kafka.apache.org/)
 - [http://kafka.apache.org/quickstart](http://kafka.apache.org/quickstart)
 
-## 1. 安装kafka
+## 1. 安装 kafka
 
 ```bash
-wget http://mirrors.tuna.tsinghua.edu.cn/apache/kafka/2.3.0/kafka_2.12-2.3.0.tgz
+wget https://mirrors.tuna.tsinghua.edu.cn/apache/kafka/2.5.0/kafka_2.12-2.5.0.tgz
 
-tar -xzf kafka_2.12-2.3.0.tgz
-mv kafka_2.12-2.3.0 /usr/local/kafka
+tar -xzf kafka_2.12-2.5.0.tgz
+mv kafka_2.12-2.5.0 /usr/local/kafka
 
 vi /etc/profile
 export KAFKA_HOME=/usr/local/kafka
@@ -17,7 +17,7 @@ export PATH=$KAFKA_HOME/bin:$PATH
 source /etc/profile
 ```
 
-## 2. [启动zookeeper服务](../zookeeper/搭建单机集群.md)
+## 2. [启动 zookeeper 服务](../zookeeper/搭建单机集群.md)
 
 ```bash
 #启动服务 - start
@@ -29,7 +29,7 @@ zkServer.sh start ~/zookeeper/zoo03.cfg
 zkCli.sh -server 192.168.137.128:2181
 ```
 
-## 3. 启动Kafka
+## 3. 启动 Kafka
 
 ```bash
 vi $KAFKA_HOME/config/server.properties
@@ -70,14 +70,14 @@ kafka-server-start.sh $KAFKA_HOME/config/server.properties
 [2019-08-12 00:04:13,943] INFO [KafkaServer id=0] started (kafka.server.KafkaServer)
 ```
 
-## zkCli.sh查看kafka
+## zkCli.sh 查看 kafka
 
 ```bash
 [zk: 192.168.137.128:2181(CONNECTED) 4] ls /
 [admin, brokers, cluster, config, consumers, controller, controller_epoch, isr_change_notification, latest_producer_id_block, log_dir_event_notification]
 ```
 
-## 4. 创建topic
+## 4. 创建 topic
 
 Let's create a topic named "test" with a single partition and only one replica
 

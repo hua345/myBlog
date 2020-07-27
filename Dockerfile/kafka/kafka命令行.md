@@ -43,7 +43,7 @@ Option                                   Description
   replication factor>                      partition in the topic being created.
 ```
 
-## 1. 创建topic
+## 1. 创建 topic
 
 Let's create a topic named "test" with a single partition and only one replica
 
@@ -53,7 +53,16 @@ Let's create a topic named "test" with a single partition and only one replica
 ➜  ~ kafka-topics.sh --create --bootstrap-server 192.168.137.128:9092 --replication-factor 3 --partitions 3 --topic love
 ```
 
-在三台kafka上都可以查看`topic`详情
+### 修改主题的分区数量
+
+修改后的分区需要比当前分区数量大,如果当前分区数是`3`,改为分区数为`2`,则会报如下错误
+`Topic currently has 3 partitions, which is higher than the requested 2.`
+
+```bash
+kafka-topics.sh --bootstrap-server 192.168.137.128:9092 --alter --topic love --partitions 4
+```
+
+在三台 kafka 上都可以查看`topic`详情
 
 ```bash
 ➜  ~ kafka-topics.sh --describe --bootstrap-server 192.168.137.128:9092 --topic fang
@@ -70,8 +79,8 @@ Topic:love      PartitionCount:3        ReplicationFactor:3     Configs:segment.
 第一行给出了所有分区的摘要，下面的每行都给出了一个分区的信息。因为我们只有一个分区，所以只有一行。
 
 - “leader”是负责给定分区所有读写操作的节点。每个节点都是随机选择的部分分区的领导者。
-- “replicas”是复制分区日志的节点列表，不管这些节点是leader还是仅仅活着。
-- “isr”是一组“同步”replicas，是replicas列表的子集，它活着并被指到leader。
+- “replicas”是复制分区日志的节点列表，不管这些节点是 leader 还是仅仅活着。
+- “isr”是一组“同步”replicas，是 replicas 列表的子集，它活着并被指到 leader。
 
 ## 2. 发送消息
 
@@ -83,10 +92,60 @@ Topic:love      PartitionCount:3        ReplicationFactor:3     Configs:segment.
 
 ## 3. 启动简单的消费者
 
-在三台kafka上都可以接收到消息
+在三台 kafka 上都可以接收到消息
 
 ```bash
-➜  ~ kafka-console-consumer.sh --bootstrap-server 192.168.137.128:9093 --topic love --from-beginning
+➜  ~ kafka-console-consumer.sh --bootstrap-server 192.168.137.128:9094 --topic fang --group fangGroup --from-beginning
 hello world
 fang love you
+```
+
+## 4 查询消费组信息
+
+```bash
+# 查询消费组列表
+➜  ~ kafka-consumer-groups.sh  --bootstrap-server 192.168.137.128:9092,192.168.137.128:9093,192.168.137.128:9094  --list
+fangGroup
+# 查询消费组消费情况
+➜  ~ kafka-consumer-groups.sh  --bootstrap-server 192.168.137.128:9092,192.168.137.128:9093,192.168.137.128:9094  --describe --group fangGroup
+
+GROUP           TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID                                               HOST             CLIENT-ID
+fangGroup       fang            0          5               5               0               consumer-fangGroup-1-b2ad52a9-e446-45a8-8ed6-74b0bdeb502f /192.168.137.128 consumer-fangGroup-1
+```
+
+## 吞吐量测试
+
+```bash
+kafka-producer-perf-test.sh --topic fang --num-records 100000 --record-size 150 --throughput -1 --producer-props bootstrap.servers=192.168.137.128:9092,192.168.137.128:9093,192.168.137.128:9094 acks=-1
+
+62730 records sent, 12491.0 records/sec (1.79 MB/sec), 2520.9 ms avg latency, 3920.0 ms max latency.
+100000 records sent, 12856.775521 records/sec (1.84 MB/sec), 3335.59 ms avg latency, 6028.00 ms max latency, 3404 ms 50th, 5393 ms 95th, 6010 ms 99th, 6026 ms 99.9th.
+```
+
+### kafka-console-consumer 参数说明
+
+```bash
+➜  ~ kafka-console-consumer.sh h
+Exactly one of whitelist/topic is required.
+Option                                   Description
+------                                   -----------
+--from-beginning                         If the consumer does not already have
+                                           an established offset to consume
+                                           from, start with the earliest
+                                           message present in the log rather
+                                           than the latest message.
+--group <String: consumer group id>      The consumer group id of the consumer.
+--max-messages <Integer: num_messages>   The maximum number of messages to
+                                           consume before exiting. If not set,
+                                           consumption is continual.
+--offset <String: consume offset>        The offset id to consume from (a non-
+                                           negative number), or 'earliest'
+                                           which means from beginning, or
+                                           'latest' which means from end
+                                           (default: latest)
+--partition <Integer: partition>         The partition to consume from.
+                                           Consumption starts from the end of
+                                           the partition unless '--offset' is
+                                           specified.
+
 ```

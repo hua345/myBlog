@@ -79,4 +79,5 @@ select_type:SIMPLE type:const rows:1
 ## 参考
 
 - [阿里《Java 开发手册》](https://github.com/alibaba/p3c)
+- [图解MySQL索引(三)—如何正确使用索引？](https://www.cnblogs.com/liqiangchn/p/13155536.html)
 - [Sql 优化总结](https://www.cnblogs.com/joeyJss/p/11096597.html)

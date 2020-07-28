@@ -35,7 +35,7 @@ log.dirs=/var/kafka/data02
 ### server03.properties
 
 ```properties
-broker.id=1
+broker.id=2
 listeners=PLAINTEXT://192.168.137.128:9094
 advertised.listeners=PLAINTEXT://192.168.137.128:9094
 log.dirs=/var/kafka/data03

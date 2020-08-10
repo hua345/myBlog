@@ -24,7 +24,7 @@ docker pull registry.docker-cn.com/library/ubuntu:16.04
 ```bash
 vi /etc/docker/daemon.json
 {
-  "registry-mirrors": ["https://umqazjiq.mirror.aliyuncs.com"]
+  "registry-mirrors": ["https://registry.docker-cn.com"]
 }
 ```
 

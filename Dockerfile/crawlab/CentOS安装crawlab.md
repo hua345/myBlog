@@ -169,4 +169,6 @@ firewall-cmd --zone=public --list-ports
 
 ![crawlab](./img/crawlab01.png)
 
+![crawlab](./img/crawlab02.png)
+
 ## [crawlab配置](https://docs.crawlab.cn/zh/Config/)

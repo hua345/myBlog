@@ -13,9 +13,9 @@
 
 ![elasticsearch01](./img/elasticsearch01.png)
 
-`ElasticSearch`是一个基于[Apache Lucene](https://lucene.apache.org/core/)(TM)的开源搜索引擎。`Elasticsearch`也使用Java开发并使用`Lucene`作为其核心来实现所有索引和搜索的功能，但是它的目的是通过简单的`RESTful API`来隐藏Lucene的复杂性，从而让全文搜索变得简单。
+`ElasticSearch`是一个基于[Apache Lucene](https://lucene.apache.org/core/)(TM)的开源搜索引擎。`Elasticsearch`也使用 Java 开发并使用`Lucene`作为其核心来实现所有索引和搜索的功能，但是它的目的是通过简单的`RESTful API`来隐藏 Lucene 的复杂性，从而让全文搜索变得简单。
 
-### 添加elasticsearch用户
+### 添加 elasticsearch 用户
 
 ```bash
 adduser elasticsearch
@@ -25,38 +25,29 @@ chown -R elasticsearch:elasticsearch elasticsearch
 
 ### 使用新用户运行`Elasticsearch`
 
-[elasticsearch下载页面](https://www.elastic.co/guide/en/elasticsearch/reference/current/targz.html)
+[elasticsearch 下载页面](https://www.elastic.co/guide/en/elasticsearch/reference/current/targz.html)
 
 ```bash
 ssh elasticsearch@192.168.137.128
 
-tar -zvxf elasticsearch-7.2.0-linux-x86_64.tar.gz
+➜  ~ wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.8.1-linux-x86_64.tar.gz
 
-cd elasticsearch-7.2.0
-
-# nohup ./bin/elasticsearch > ~/elastic.log 2>&1 &
-./bin/elasticsearch
-
-[2019-07-21T20:39:34,412][DEBUG][o.e.a.ActionModule       ] [consul01] Using REST wrapper from plugin org.elasticsearch.xpack.security.Security
-[2019-07-21T20:39:35,035][INFO ][o.e.d.DiscoveryModule    ] [consul01] using discovery type [zen] and seed hosts providers [settings]
-[2019-07-21T20:39:37,367][INFO ][o.e.n.Node               ] [consul01] initialized
-[2019-07-21T20:39:37,368][INFO ][o.e.n.Node               ] [consul01] starting ...
-[2019-07-21T20:39:52,775][INFO ][o.e.t.TransportService   ] [consul01] publish_address {127.0.0.1:9300}, bound_addresses {[::1]:9300}, {127.0.0.1:9300}
-...
-[2019-07-21T20:39:56,247][INFO ][o.e.h.AbstractHttpServerTransport] [consul01] publish_address {127.0.0.1:9200}, bound_addresses {[::1]:9200}, {127.0.0.1:9200}
-[2019-07-21T20:39:56,249][INFO ][o.e.n.Node               ] [consul01] started
-[2019-07-21T20:39:56,352][INFO ][o.e.g.GatewayService     ] [consul01] recovered [0] indices into cluster_state
+➜  ~ tar -zvxf elasticsearch-7.8.1-linux-x86_64.tar.gz
+➜  ~ mv elasticsearch-7.8.1/ /home/elasticsearch/elasticsearch-7.8.1/
+➜  ~ chown -R elasticsearch:elasticsearch /home/elasticsearch/elasticsearch-7.8.1
+➜  ~ mkdir /var/elasticsearch
+➜  ~ mkdir /var/elasticsearch/data
+➜  ~ mkdir /var/elasticsearch/logs
+➜  ~ chown -R elasticsearch:elasticsearch /var/elasticsearch
 ```
 
-如果想在后台以守护进程模式运行，添加`-d`参数。
-
-```bash
-➜  ~ netstat -lntup
-tcp6       0      0 127.0.0.1:9200          :::*                    LISTEN      45705/java
-tcp6       0      0 ::1:9200                :::*                    LISTEN      45705/java
-tcp6       0      0 127.0.0.1:9300          :::*                    LISTEN      45705/java
-tcp6       0      0 ::1:9300                :::*                    LISTEN      45705/java
-```
+| 文件类型 | 说明                                       | 默认位置                                |
+| -------- | ------------------------------------------ | --------------------------------------- |
+| home     | Elasticsearch home directory or `$ES_HOME` | Elasticsearch 解压后目录                |
+| conf     | 配置文件包含`elasticsearch.yml`            | `$ES_HOME/config`                       |
+| data     | index/shard 数据文件                       | `$ES_HOME/data` 配置文件对应`path.data` |
+| logs     | 日志文件位置                               | `$ES_HOME/logs` 配置文件对应`path.logs` |
+| plugins  | plugins 插件位置                           | `$ES_HOME/plugins`                      |
 
 #### 修改配置`config/elasticsearch.yml`
 
@@ -89,37 +80,7 @@ discovery.seed_hosts: ["host1"]
 cluster.initial_master_nodes: ["node01"]
 ```
 
-#### 打开另一个终端进行测试
-
-```json
-➜  ~ http http://192.168.137.128:9200/
-HTTP/1.1 200 OK
-content-encoding: gzip
-content-length: 302
-content-type: application/json; charset=UTF-8
-
-{
-    "cluster_name": "elasticsearch",
-    "cluster_uuid": "DRmPTPf2Qs2gP8BOFhuwDw",
-    "name": "node-1",
-    "tagline": "You Know, for Search",
-    "version": {
-        "build_date": "2019-06-20T15:54:18.811730Z",
-        "build_flavor": "default",
-        "build_hash": "508c38a",
-        "build_snapshot": false,
-        "build_type": "tar",
-        "lucene_version": "8.0.0",
-        "minimum_index_compatibility_version": "6.0.0-beta1",
-        "minimum_wire_compatibility_version": "6.8.0",
-        "number": "7.2.0"
-    }
-}
-```
-
-这说明你的`ELasticsearch`集群已经启动并且正常运行
-
-### 安装出现的问题
+### 启动出现的问题
 
 ```bash
 ERROR: [3] bootstrap checks failed
@@ -140,7 +101,12 @@ ulimit -u 65536
 *          soft    nofile    65536
 *          hard    nofile    65536
 root       soft    nproc     unlimited
-
+➜  ~ vi /etc/security/limits.conf
+* soft nofile 65536
+* hard nofile 65536
+* soft nproc 4096
+* hard nproc 4096
+# 重启电脑
 
 #解决[2]: max virtual memory areas vm.max_map_count [65530] is too low
 ➜  ~ vi /etc/sysctl.conf
@@ -164,4 +130,93 @@ discovery.seed_hosts: ["host1"]
 cluster.initial_master_nodes: ["node01"]
 ```
 
-#### [Elasticsearch权威指南中文版](https://github.com/looly/elasticsearch-definitive-guide-cn)
+### 加入`systemctl`服务
+
+```bash
+vi /lib/systemd/system/elasticsearch.service
+```
+
+```conf
+[Unit]
+Description=elasticsearch Service 01
+After=network.target
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=elasticsearch
+Group=elasticsearch
+LimitNOFILE=65536
+LimitNPROC=65536
+ExecStart=/home/elasticsearch/elasticsearch-7.8.1/bin/elasticsearch
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```bash
+systemctl daemon-reload
+systemctl enable elasticsearch
+systemctl start elasticsearch
+```
+
+#### 打开另一个终端进行测试
+
+```json
+➜  ~ http http://192.168.137.129:9200/
+HTTP/1.1 200 OK
+content-encoding: gzip
+content-length: 329
+content-type: application/json; charset=UTF-8
+
+{
+    "cluster_name": "elasticsearch",
+    "cluster_uuid": "uzfkMxgBQUmpqwSEP-SqXQ",
+    "name": "node01",
+    "tagline": "You Know, for Search",
+    "version": {
+        "build_date": "2020-07-21T16:40:44.668009Z",
+        "build_flavor": "default",
+        "build_hash": "b5ca9c58fb664ca8bf9e4057fc229b3396bf3a89",
+        "build_snapshot": false,
+        "build_type": "tar",
+        "lucene_version": "8.5.1",
+        "minimum_index_compatibility_version": "6.0.0-beta1",
+        "minimum_wire_compatibility_version": "6.8.0",
+        "number": "7.8.1"
+    }
+}
+```
+
+这说明你的`ELasticsearch`集群已经启动并且正常运行
+
+### 后台运行
+
+```bash
+# nohup ./bin/elasticsearch > ~/elastic.log 2>&1 &
+./bin/elasticsearch
+
+[2019-07-21T20:39:34,412][DEBUG][o.e.a.ActionModule       ] [consul01] Using REST wrapper from plugin org.elasticsearch.xpack.security.Security
+[2019-07-21T20:39:35,035][INFO ][o.e.d.DiscoveryModule    ] [consul01] using discovery type [zen] and seed hosts providers [settings]
+[2019-07-21T20:39:37,367][INFO ][o.e.n.Node               ] [consul01] initialized
+[2019-07-21T20:39:37,368][INFO ][o.e.n.Node               ] [consul01] starting ...
+[2019-07-21T20:39:52,775][INFO ][o.e.t.TransportService   ] [consul01] publish_address {127.0.0.1:9300}, bound_addresses {[::1]:9300}, {127.0.0.1:9300}
+...
+[2019-07-21T20:39:56,247][INFO ][o.e.h.AbstractHttpServerTransport] [consul01] publish_address {127.0.0.1:9200}, bound_addresses {[::1]:9200}, {127.0.0.1:9200}
+[2019-07-21T20:39:56,249][INFO ][o.e.n.Node               ] [consul01] started
+[2019-07-21T20:39:56,352][INFO ][o.e.g.GatewayService     ] [consul01] recovered [0] indices into cluster_state
+```
+
+如果想在后台以守护进程模式运行，添加`-d`参数。
+
+```bash
+➜  ~ netstat -lntup
+tcp6       0      0 127.0.0.1:9200          :::*                    LISTEN      45705/java
+tcp6       0      0 ::1:9200                :::*                    LISTEN      45705/java
+tcp6       0      0 127.0.0.1:9300          :::*                    LISTEN      45705/java
+tcp6       0      0 ::1:9300                :::*                    LISTEN      45705/java
+```
+
+#### [Elasticsearch 权威指南中文版](https://github.com/looly/elasticsearch-definitive-guide-cn)

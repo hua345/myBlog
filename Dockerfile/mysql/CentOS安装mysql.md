@@ -101,4 +101,19 @@ success
 success
 # 添加远程登录用户
 mysql> GRANT ALL PRIVILEGES ON *.* TO 'testUsre'@'%' IDENTIFIED BY 'testPassword' WITH GRANT OPTION;
+
+# 查看Mysql用户
+mysql> select user,host from mysql.user;
++------------------+-----------+
+| user             | host      |
++------------------+-----------+
+| root             | %         |
+| springuser       | %         |
+| root             | gateway   |
+| mysql.infoschema | localhost |
+| mysql.session    | localhost |
+| mysql.sys        | localhost |
+| root             | localhost |
++------------------+-----------+
+7 rows in set (0.00 sec)
 ```

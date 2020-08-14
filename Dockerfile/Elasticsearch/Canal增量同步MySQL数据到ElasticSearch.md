@@ -101,7 +101,9 @@ java.lang.RuntimeException: NoNodeAvailableException[None of the configured node
 [2020-08-14T18:52:59,290][WARN ][o.e.t.TcpTransport       ] [node01] exception caught on transport layer [Netty4TcpChannel{localAddress=/192.168.137.129:9300, remoteAddress=/192.168.137.129:58802}], closing connection
 java.lang.IllegalStateException: Received message from unsupported version: [6.4.3] minimal compatible version is: [6.8.0]
         at org.elasticsearch.transport.InboundDecoder.ensureVersionCompatibility(InboundDecoder.java:210) ~[elasticsearch-7.8.1.jar:7.8.1]
-# 手动编译canal或者canal升级到1.1.5
+# canal adapter 的 Elastic Search 版本支持6.x.x以上, 如需其它版本的es可替换依赖重新编译client-adapter.elasticsearch模块
+# 或者升级到1.1.5,name: es7
+# https://github.com/alibaba/canal/wiki/Sync-ES
 
 2020-08-14 17:41:03.978 [pool-5-thread-1] INFO  c.a.o.canal.client.adapter.logger.LoggerAdapterExample - DML: {"data":[{"bookId":4,"bookName":"爱的艺术","bookDate":1597319169000}],"database":"db_example","destination":"example","es":1597398063000,"groupId":null,"isDdl":false,"old":null,"pkNames":["bookId"],"sql":"","table":"book","ts":1597398063978,"type":"INSERT"}
 2020-08-14 17:41:21.016 [pool-5-thread-1] INFO  c.a.o.canal.client.adapter.logger.LoggerAdapterExample - DML: {"data":[{"bookId":5,"bookName":"围城","bookDate":1597319457000}],"database":"db_example","destination":"example","es":1597398080000,"groupId":null,"isDdl":false,"old":null,"pkNames":["bookId"],"sql":"","table":"book","ts":1597398081016,"type":"INSERT"}

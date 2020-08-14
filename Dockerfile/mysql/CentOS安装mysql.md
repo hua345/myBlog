@@ -52,6 +52,10 @@ systemctl enable --now mysqld
 
 11月 04 18:43:38 db.learn systemd[1]: Starting MySQL 8.0 database server...
 11月 04 18:43:43 db.learn systemd[1]: Started MySQL 8.0 database server.
+
+# 查看mysql版本
+mysql -V
+mysql  Ver 8.0.21 for Linux on x86_64 (MySQL Community Server - GPL)
 ```
 
 ## 设置用户密码

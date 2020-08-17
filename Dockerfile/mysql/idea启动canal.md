@@ -1,5 +1,9 @@
 # canal
 
+## 参考
+
+- [Canal——Canal-Adapter源码在IDEA部署运行](https://www.cnblogs.com/caoweixiong/p/11961600.html)
+
 ## 下载源码
 
 ```bash
@@ -39,6 +43,26 @@ canal client adapter module for otter
 ## idea启动
 
 ![canal_adapter02](./img/canal_adapter02.png)
+
+## 全量更新
+
+`launcher项目 -> rest包 -> CommonRest类`
+
+![canal_adapter03](./img/canal_adapter03.png)
+
+`POST localhost:8081/etl/es7/book.yml`
+
+```json
+{
+    "succeeded": true,
+    "resultMessage": "导入ES 数据：27 条"
+}
+```
+
+```log
+2020-08-17 16:37:28.237 [http-nio-8081-exec-4] INFO  c.a.otter.canal.client.adapter.es7x.etl.ESEtlService - start etl to import data to index: book_index
+2020-08-17 16:37:28.311 [http-nio-8081-exec-4] INFO  c.a.otter.canal.client.adapter.es7x.etl.ESEtlService - 数据全量导入完成, 一共导入 27 条数据, 耗时: 74
+```
 
 ## linux启动`/bin/bash^M: bad interpreter`
 

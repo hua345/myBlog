@@ -47,16 +47,16 @@ Canal 为 C/S 架构，分为 Server 端和 Client 端
 ## 安装
 
 ```bash
-wget https://github.com/alibaba/canal/releases/download/canal-1.1.4/canal.deployer-1.1.4.tar.gz
-wget https://github.com/alibaba/canal/releases/download/canal-1.1.4/canal.adapter-1.1.4.tar.gz
-wget https://github.com/alibaba/canal/releases/download/canal-1.1.4/canal.admin-1.1.4.tar.gz
+wget https://github.com/alibaba/canal/releases/download/canal-1.1.5-alpha-1/canal.deployer-1.1.5-SNAPSHOT.tar.gz
+wget https://github.com/alibaba/canal/releases/download/canal-1.1.5-alpha-1/canal.adapter-1.1.5-SNAPSHOT.tar.gz
+wget https://github.com/alibaba/canal/releases/download/canal-1.1.5-alpha-1/canal.admin-1.1.5-SNAPSHOT.tar.gz
 
 mkdir /usr/local/canal_deployer
 mkdir /usr/local/canal_adapter
 mkdir /usr/local/canal_admin
-tar zxvf canal.deployer-1.1.4.tar.gz  -C /usr/local/canal_deployer
-tar zxvf canal.adapter-1.1.4.tar.gz  -C /usr/local/canal_adapter
-tar zxvf canal.admin-1.1.4.tar.gz  -C /usr/local/canal_admin
+tar zxvf canal.deployer-1.1.5-SNAPSHOT.tar.gz  -C /usr/local/canal_deployer
+tar zxvf canal.adapter-1.1.5-SNAPSHOT.tar.gz  -C /usr/local/canal_adapter
+tar zxvf canal.admin-1.1.5-SNAPSHOT.tar.gz  -C /usr/local/canal_admin
 ```
 
 ## `canal deployer`配置
@@ -212,18 +212,45 @@ spring:
     default-property-inclusion: non_null
 
 canal.conf:
-  mode: tcp
-# kafka rocketMQ
-  canalServerHost: 192.168.137.129:11111
-#  zookeeperHosts: slave1:2181
-#  mqServers: 127.0.0.1:9092 #or rocketmq
-#  flatMessage: true
-  batchSize: 500
+  mode: tcp #tcp kafka rocketMQ rabbitMQ
+  flatMessage: true
+  #zookeeperHosts:
   syncBatchSize: 1000
   retries: 0
   timeout:
   accessKey:
   secretKey:
+  consumerProperties:
+    # canal tcp consumer
+    canal.tcp.server.host: 192.168.137.129:11111
+    #canal.tcp.zookeeper.hosts:
+    canal.tcp.batch.size: 500
+    canal.tcp.username:
+    canal.tcp.password:
+#    # kafka consumer
+#    kafka.bootstrap.servers: 127.0.0.1:9092
+#    kafka.enable.auto.commit: false
+#    kafka.auto.commit.interval.ms: 1000
+#    kafka.auto.offset.reset: latest
+#    kafka.request.timeout.ms: 40000
+#    kafka.session.timeout.ms: 30000
+#    kafka.isolation.level: read_committed
+#    kafka.max.poll.records: 1000
+#    # rocketMQ consumer
+#    rocketmq.namespace:
+#    rocketmq.namesrv.addr: 127.0.0.1:9876
+#    rocketmq.batch.size: 1000
+#    rocketmq.enable.message.trace: false
+#    rocketmq.customized.trace.topic:
+#    rocketmq.access.channel:
+#    rocketmq.subscribe.filter:
+#    # rabbitMQ consumer
+#    rabbitmq.host:
+#    rabbitmq.virtual.host:
+#    rabbitmq.username:
+#    rabbitmq.password:
+#    rabbitmq.resource.ownerId:
+
   srcDataSources:
     defaultDS:
       url: jdbc:mysql://192.168.137.129:3306/db_example?useUnicode=true
@@ -263,14 +290,12 @@ canal.conf:
 #          hbase.zookeeper.quorum: 127.0.0.1
 #          hbase.zookeeper.property.clientPort: 2181
 #          zookeeper.znode.parent: /hbase
-      - name: es
-        hosts: 192.168.137.129:9200
-        # 127.0.0.1:9200 for rest mode
+      - name: es7 #集群版本，支持 es6 与 es7
+        hosts: 192.168.137.129:9200 # 127.0.0.1:9200 for rest mode
         properties:
-          mode: rest
-          # transport or rest
+          mode: rest # transport or rest #rest方式通过http API 访问ES(没有语言限制),transport通过TCP方式访问ES在 es8.0将会被移除
           # security.auth: test:123456 #  only used for rest mode
-          cluster.name: my-application
+          cluster.name: my-application #指定elasticsearch集群名称
 ```
 
 ### es 配置
@@ -299,7 +324,8 @@ esMapping:
   _index: book_index
   _type: _doc
   _id: _id
-  sql: "select bookId as _id, bookName, bookDate from book"
+  sql: "select bookId as _id, bookName, date_format(bookDate, '%Y-%m-%d %H:%i:%s') bookDate from book
+"
   commitBatch: 3000
 ```
 
@@ -324,21 +350,21 @@ wget https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.21/mysql-conn
 
 ```log
 ➜  tail -f /usr/local/canal_adapter/logs/adapter/adapter.log
-2020-08-13 19:45:27.644 [main] INFO  c.a.o.canal.adapter.launcher.loader.CanalAdapterService - ## start the canal client adapters.
-2020-08-13 19:45:27.644 [main] INFO  c.a.otter.canal.client.adapter.support.ExtensionLoader - extension classpath dir: /usr/local/canal_adapter/plugin
-2020-08-13 19:45:27.657 [main] INFO  c.a.o.canal.adapter.launcher.loader.CanalAdapterLoader - Load canal adapter: logger succeed
-2020-08-13 19:45:27.659 [main] INFO  c.a.o.canal.client.adapter.es.config.ESSyncConfigLoader - ## Start loading es mapping config ...
-2020-08-13 19:45:27.706 [main] INFO  c.a.o.canal.client.adapter.es.config.ESSyncConfigLoader - ## ES mapping config loaded
-2020-08-13 19:45:28.000 [main] INFO  c.a.o.canal.adapter.launcher.loader.CanalAdapterLoader - Load canal adapter: es succeed
-2020-08-13 19:45:28.007 [main] INFO  c.a.o.canal.adapter.launcher.loader.CanalAdapterLoader - Start adapter for canal instance: example succeed
-2020-08-13 19:45:28.007 [Thread-4] INFO  c.a.o.canal.adapter.launcher.loader.CanalAdapterWorker - =============> Start to connect destination: example <=============
-2020-08-13 19:45:28.007 [main] INFO  c.a.o.canal.adapter.launcher.loader.CanalAdapterService - ## the canal client adapters are running now ......
-2020-08-13 19:45:28.011 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8081"]
-2020-08-13 19:45:28.012 [main] INFO  org.apache.tomcat.util.net.NioSelectorPool - Using a shared selector for servlet write/read
-2020-08-13 19:45:28.025 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
-2020-08-13 19:45:28.027 [main] INFO  c.a.otter.canal.adapter.launcher.CanalAdapterApplication - Started CanalAdapterApplication in 3.219 seconds (JVM running for 3.588)
-2020-08-13 19:45:28.046 [Thread-4] INFO  c.a.o.canal.adapter.launcher.loader.CanalAdapterWorker - =============> Start to subscribe destination: example <=============
-2020-08-13 19:45:28.086 [Thread-4] INFO  c.a.o.canal.adapter.launcher.loader.CanalAdapterWorker - =============> Subscribe destination: example succeed <=============
+2020-08-17 13:51:47.964 [main] INFO  c.a.o.c.client.adapter.es.core.config.ESSyncConfigLoader - ## Start loading es mapping config ... 
+2020-08-17 13:51:48.002 [main] INFO  c.a.o.c.client.adapter.es.core.config.ESSyncConfigLoader - ## ES mapping config loaded
+2020-08-17 13:51:48.068 [main] INFO  c.a.o.canal.adapter.launcher.loader.CanalAdapterLoader - Load canal adapter: es7 succeed
+2020-08-17 13:51:48.072 [main] INFO  c.alibaba.otter.canal.connector.core.spi.ExtensionLoader - extension classpath dir: F:\Code\canal\client-adapter\launcher\target\canal-adapter\plugin
+2020-08-17 13:51:48.085 [main] INFO  c.a.o.canal.adapter.launcher.loader.CanalAdapterLoader - Start adapter for canal-client mq topic: example-g1 succeed
+2020-08-17 13:51:48.085 [Thread-28] INFO  c.a.otter.canal.adapter.launcher.loader.AdapterProcessor - =============> Start to connect destination: example <=============
+2020-08-17 13:51:48.085 [main] INFO  c.a.o.canal.adapter.launcher.loader.CanalAdapterService - ## the canal client adapters are running now ......
+2020-08-17 13:51:48.089 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8081"]
+2020-08-17 13:51:48.090 [main] INFO  org.apache.tomcat.util.net.NioSelectorPool - Using a shared selector for servlet write/read
+2020-08-17 13:51:48.106 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+2020-08-17 13:51:48.108 [main] INFO  c.a.otter.canal.adapter.launcher.CanalAdapterApplication - Started CanalAdapterApplication in 12.187 seconds (JVM running for 13.106)
+2020-08-17 13:51:48.164 [Thread-28] INFO  c.a.otter.canal.adapter.launcher.loader.AdapterProcessor - =============> Subscribe destination: example succeed <=============
+2020-08-17 13:52:05.030 [pool-2-thread-1] INFO  c.a.o.canal.client.adapter.logger.LoggerAdapterExample - DML: {"data":[{"bookId":26,"bookName":"算法之美","bookDate":1597643523000}],"database":"db_example","destination":"example","es":1597643523000,"groupId":"g1","isDdl":false,"old":null,"pkNames":["bookId"],"sql":"","table":"book","ts":1597643524949,"type":"INSERT"}
+2020-08-17 13:52:05.128 [pool-2-thread-1] DEBUG c.a.o.canal.client.adapter.es.core.service.ESSyncService - DML: {"data":[{"bookId":26,"bookName":"算法之美","bookDate":1597643523000}],"database":"db_example","destination":"example","es":1597643523000,"groupId":"g1","isDdl":false,"old":null,"pkNames":["bookId"],"sql":"","table":"book","ts":1597643524949,"type":"INSERT"} 
+Affected indexes: book_index 
 ```
 
 ## Http管理状态
@@ -358,6 +384,3 @@ Transfer-Encoding: chunked
     }
 ]
 ```
-
-## `canal admin`部署
-

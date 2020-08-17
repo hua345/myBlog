@@ -75,6 +75,27 @@ tail -f /usr/local/canal_deployer/logs/example/meta.log
 # 查看canal-apadter客户端日志
 tail -f /usr/local/canal_adapter/logs/adapter/adapter.log
 
+2020-08-17 13:52:05.030 [pool-2-thread-1] INFO  c.a.o.canal.client.adapter.logger.LoggerAdapterExample - DML: {"data":[{"bookId":26,"bookName":"算法之美","bookDate":1597643523000}],"database":"db_example","destination":"example","es":1597643523000,"groupId":"g1","isDdl":false,"old":null,"pkNames":["bookId"],"sql":"","table":"book","ts":1597643524949,"type":"INSERT"}
+2020-08-17 13:52:05.128 [pool-2-thread-1] DEBUG c.a.o.canal.client.adapter.es.core.service.ESSyncService - DML: {"data":[{"bookId":26,"bookName":"算法之美","bookDate":1597643523000}],"database":"db_example","destination":"example","es":1597643523000,"groupId":"g1","isDdl":false,"old":null,"pkNames":["bookId"],"sql":"","table":"book","ts":1597643524949,"type":"INSERT"} 
+Affected indexes: book_index 
+2020-08-17 13:53:01.242 [pool-2-thread-1] INFO  c.a.o.canal.client.adapter.logger.LoggerAdapterExample - DML: {"data":[{"bookId":27,"bookName":"算法导论","bookDate":1597643580000}],"database":"db_example","destination":"example","es":1597643580000,"groupId":"g1","isDdl":false,"old":null,"pkNames":["bookId"],"sql":"","table":"book","ts":1597643581242,"type":"INSERT"}
+2020-08-17 13:53:01.245 [pool-2-thread-1] DEBUG c.a.o.canal.client.adapter.es.core.service.ESSyncService - DML: {"data":[{"bookId":27,"bookName":"算法导论","bookDate":1597643580000}],"database":"db_example","destination":"example","es":1597643580000,"groupId":"g1","isDdl":false,"old":null,"pkNames":["bookId"],"sql":"","table":"book","ts":1597643581242,"type":"INSERT"} 
+Affected indexes: book_index 
+2020-08-17 13:54:51.668 [pool-2-thread-1] INFO  c.a.o.canal.client.adapter.logger.LoggerAdapterExample - DML: {"data":[{"bookId":27,"bookName":"算法导论2","bookDate":1597643580000}],"database":"db_example","destination":"example","es":1597643690000,"groupId":"g1","isDdl":false,"old":[{"bookName":"算法导论"}],"pkNames":["bookId"],"sql":"","table":"book","ts":1597643691667,"type":"UPDATE"}
+2020-08-17 13:54:51.675 [pool-2-thread-1] DEBUG c.a.o.canal.client.adapter.es.core.service.ESSyncService - DML: {"data":[{"bookId":27,"bookName":"算法导论2","bookDate":1597643580000}],"database":"db_example","destination":"example","es":1597643690000,"groupId":"g1","isDdl":false,"old":[{"bookName":"算法导论"}],"pkNames":["bookId"],"sql":"","table":"book","ts":1597643691667,"type":"UPDATE"} 
+Affected indexes: book_index 
+2020-08-17 13:55:23.457 [pool-2-thread-1] INFO  c.a.o.canal.client.adapter.logger.LoggerAdapterExample - DML: {"data":[{"bookId":27,"bookName":"算法导论2","bookDate":1597643580000}],"database":"db_example","destination":"example","es":1597643722000,"groupId":"g1","isDdl":false,"old":null,"pkNames":["bookId"],"sql":"","table":"book","ts":1597643723457,"type":"DELETE"}
+2020-08-17 13:55:23.458 [pool-2-thread-1] DEBUG c.a.o.canal.client.adapter.es.core.service.ESSyncService - DML: {"data":[{"bookId":27,"bookName":"算法导论2","bookDate":1597643580000}],"database":"db_example","destination":"example","es":1597643722000,"groupId":"g1","isDdl":false,"old":null,"pkNames":["bookId"],"sql":"","table":"book","ts":1597643723457,"type":"DELETE"} 
+Affected indexes: book_index 
+```
+
+![es01](./img/es01.png)
+
+## 出现的问题
+
+### `Not found the mapping info of index`
+
+```log
 2020-08-14 17:23:36.735 [pool-3-thread-1] ERROR c.a.otter.canal.client.adapter.es.service.ESSyncService - sync error, es index: book_index, DML : Dml{destination='example', database='db_example', table='book', type='INSERT', es=1597397016000, ts=1597397016733, sql='', data=[{bookId=3, bookName=非暴力沟通, bookDate=2020-08-13 19:27:09.0}], old=null}
 2020-08-14 17:23:36.736 [pool-3-thread-1] ERROR c.a.o.canal.adapter.launcher.loader.CanalAdapterWorker - java.lang.IllegalArgumentException: Not found the mapping info of index: book_index
 java.lang.RuntimeException: java.lang.IllegalArgumentException: Not found the mapping info of index: book_index
@@ -87,25 +108,34 @@ Caused by: java.lang.IllegalArgumentException: Not found the mapping info of ind
         at com.alibaba.otter.canal.client.adapter.es.service.ESSyncService.sync(ESSyncService.java:93)
         ... 11 common frames omitted
 2020-08-14 17:51:28.266 [Thread-4] ERROR c.a.o.canal.adapter.launcher.loader.CanalAdapterWorker - Outer adapter sync failed!  Error sync but ACK!
+```
 
-#canal适配器会通过GET `http://192.168.137.129:9200/book_index2/_mapping`的方式读取`es mapping`，如果创建索引的时候没有配置mappings信息，会报`Not found the mapping info of index`异常；
+canal适配器会通过GET `http://192.168.137.129:9200/book_index2/_mapping`的方式读取`es mapping`，如果创建索引的时候没有配置mappings信息，会报`Not found the mapping info of index`异常；
 
+### `unknown setting [mode] please check that any required plugins are installed`
+
+```log
 2020-08-14 17:49:18.185 [main] ERROR c.a.o.canal.adapter.launcher.loader.CanalAdapterLoader - Load canal adapter: es failed
 java.lang.RuntimeException: java.lang.IllegalArgumentException: unknown setting [mode] please check that any required plugins are installed, or check the breaking changes documentation for removed settings
         at com.alibaba.otter.canal.client.adapter.es.ESAdapter.init(ESAdapter.java:137)
-# mode: transport # transport # or rest //注释了这行，是1.1.4的坑
+```
 
+`mode: transport # transport # or rest`
+注释了这行，是`1.1.4`的坑
+
+### `NoNodeAvailableException[None of the configured nodes are available`
+
+```log
 2020-08-14 18:47:50.457 [pool-2-thread-1] ERROR c.a.o.canal.adapter.launcher.loader.CanalAdapterWorker - NoNodeAvailableException[None of the configured nodes are available: [{#transport#-1}{A6sMjo3fTRCFzl8ae8_3kA}{192.168.137.129}{192.168.137.129:9300}]]
 java.lang.RuntimeException: NoNodeAvailableException[None of the configured nodes are available: [{#transport#-1}{A6sMjo3fTRCFzl8ae8_3kA}{192.168.137.129}{192.168.137.129:9300}]]
+
 # 打开es日志
 [2020-08-14T18:52:59,290][WARN ][o.e.t.TcpTransport       ] [node01] exception caught on transport layer [Netty4TcpChannel{localAddress=/192.168.137.129:9300, remoteAddress=/192.168.137.129:58802}], closing connection
 java.lang.IllegalStateException: Received message from unsupported version: [6.4.3] minimal compatible version is: [6.8.0]
         at org.elasticsearch.transport.InboundDecoder.ensureVersionCompatibility(InboundDecoder.java:210) ~[elasticsearch-7.8.1.jar:7.8.1]
-# canal adapter 的 Elastic Search 版本支持6.x.x以上, 如需其它版本的es可替换依赖重新编译client-adapter.elasticsearch模块
-# 或者升级到1.1.5,name: es7
-# https://github.com/alibaba/canal/wiki/Sync-ES
-
-2020-08-14 17:41:03.978 [pool-5-thread-1] INFO  c.a.o.canal.client.adapter.logger.LoggerAdapterExample - DML: {"data":[{"bookId":4,"bookName":"爱的艺术","bookDate":1597319169000}],"database":"db_example","destination":"example","es":1597398063000,"groupId":null,"isDdl":false,"old":null,"pkNames":["bookId"],"sql":"","table":"book","ts":1597398063978,"type":"INSERT"}
-2020-08-14 17:41:21.016 [pool-5-thread-1] INFO  c.a.o.canal.client.adapter.logger.LoggerAdapterExample - DML: {"data":[{"bookId":5,"bookName":"围城","bookDate":1597319457000}],"database":"db_example","destination":"example","es":1597398080000,"groupId":null,"isDdl":false,"old":null,"pkNames":["bookId"],"sql":"","table":"book","ts":1597398081016,"type":"INSERT"}
-2020-08-14 17:43:36.026 [pool-5-thread-1] INFO  c.a.o.canal.client.adapter.logger.LoggerAdapterExample - DML: {"data":[{"bookId":6,"bookName":"学习之道","bookDate":1597320232000}],"database":"db_example","destination":"example","es":1597398215000,"groupId":null,"isDdl":false,"old":null,"pkNames":["bookId"],"sql":"","table":"book","ts":1597398216025,"type":"INSERT"}
 ```
+
+canal adapter 的 Elastic Search 版本支持`6.x.x`以上, 如需其它版本的es可替换依赖重新编译`client-adapter.elasticsearch`模块
+或者升级到`1.1.5`,name: es7
+
+参考:[https://github.com/alibaba/canal/wiki/Sync-ES](https://github.com/alibaba/canal/wiki/Sync-ES)

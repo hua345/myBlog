@@ -31,9 +31,10 @@
 ![logstash](./img/diagram-logstash-outputs.svg)
 
 ```bash
-unzip logstash-5.0.1.zip
-sudo mv logstash-5.0.1 /usr/local/logstash
-cd /usr/local/logstash/
+wget https://artifacts.elastic.co/downloads/logstash/logstash-7.8.1.tar.gz
+
+tar -zvxf logstash-7.8.1.tar.gz
+cd logstash-7.8.1
 vim config/logstash.yml
 ```
 

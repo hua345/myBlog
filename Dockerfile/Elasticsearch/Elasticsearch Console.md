@@ -13,22 +13,24 @@ GET _cat/indices?v
 
 ## 1.创建索引
 
-`POST book_index/_doc`
+- [date](https://www.elastic.co/guide/en/elasticsearch/reference/current/date.html)
+- [text](https://www.elastic.co/guide/en/elasticsearch/reference/current/text.html)
+- [number](https://www.elastic.co/guide/en/elasticsearch/reference/current/number.html)
+
+`POST book_index`
 
 ```json
 {
   "mappings": {
-    "_doc": {
-      "properties": {
-        "bookId": {
-          "type": "long"
-        },
-        "bookName": {
-          "type": "text"
-        },
-        "bookDate": {
-          "type": "date"
-        }
+    "properties": {
+      "bookId": {
+        "type": "long"
+      },
+      "bookName": {
+        "type": "text"
+      },
+      "bookDate": {
+        "type": "date"
       }
     }
   }
@@ -109,29 +111,92 @@ GET book_index/_analyze
 }
 ```
 
+### 搜索排序
+
+- [fielddata](https://www.elastic.co/guide/en/elasticsearch/reference/current/fielddata.html)
+
+`GET /book_index/_search`
+
+```json
+{
+  "query": {
+    "term": {
+      "bookName": "爱"
+    }
+  },
+  "sort": [
+    {
+      "bookDate": { "order": "desc" }
+    }
+  ]
+}
+```
+
+```json
+{
+  "shard": 0,
+  "index": "book_index",
+  "node": "JrQYgdP0RtaN2IWQga7x6A",
+  "reason": {
+    "type": "illegal_argument_exception",
+    "reason": "Text fields are not optimised for operations that require per-document field data like aggregations and sorting, so these operations are disabled by default. Please use a keyword field instead. Alternatively, set fielddata=true on [bookDate] in order to load field data by uninverting the inverted index. Note that this can use significant memory."
+  }
+}
+```
+
+没有优化的字段 es 默认是禁止`聚合/排序`操作的。所以需要将要聚合的字段添加优化
+
+`PUT book_index/_mapping`
+
+```json
+{
+  "properties": {
+    "bookDate": {
+      "type": "date",
+      "fielddata": true,
+      "fields": {
+        "keyword": {
+          "type": "keyword",
+          "ignore_above": 256
+        }
+      }
+    }
+  }
+}
+```
+
 ## 修改 Index 类型
 
 ### 新建新的 Index
 
-`POST book_index2/_doc`
+`PUT book_index2`
 
 ```json
 {
-  "settings": {
-    "number_of_shards": 3,
-    "number_of_replicas": 2
-  },
   "mappings": {
-    "_doc": {
-      "properties": {
-        "bookName": {
-          "type": "text"
-        },
-        "bookDate": {
-          "type": "date"
-        }
+    "properties": {
+      "bookName": {
+        "type": "text"
+      },
+      "bookDate": {
+        "type": "date",
+        "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
       }
     }
+  }
+}
+```
+
+### [reindex](https://www.elastic.co/guide/en/elasticsearch/reference/7.8/docs-reindex.html)复制数据
+
+```json
+POST _reindex
+{
+  "source": {
+    "index": "book_index"
+  },
+  "dest": {
+    "index": "book_index2"
   }
 }
 ```

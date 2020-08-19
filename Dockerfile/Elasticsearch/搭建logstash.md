@@ -43,16 +43,12 @@ vim config/logstash.yml
 ```bash
 ./bin/logstash -e 'input { stdin { } } output { stdout {} }'
 #The stdin plugin is now waiting for input:
-hello
-2016-11-22T14:14:57.851Z learnLinux hello
-./bin/logstash -e 'input { stdin { } } output { stdout { codec => rubydebug } }'
-goodnight
+fang
 {
-    "@timestamp" => 2016-11-22T14:35:40.557Z,
-      "@version" => "1",
-          "host" => "learnLinux",
-       "message" => "goodnight",
-          "tags" => []
+          "host" => "fangfang01",
+    "@timestamp" => 2020-08-18T16:52:32.555Z,
+       "message" => "fang",
+      "@version" => "1"
 }
 ```
 

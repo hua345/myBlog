@@ -162,6 +162,10 @@ systemctl enable elasticsearch
 systemctl start elasticsearch
 ```
 
+#### 设置默认索引
+
+![esSetDefaultIndex](./img/esSetDefaultIndex.png)
+
 #### 打开另一个终端进行测试
 
 ```json

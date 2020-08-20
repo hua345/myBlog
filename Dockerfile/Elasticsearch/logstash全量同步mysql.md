@@ -19,7 +19,7 @@ PUT book_index2
 {
   "mappings": {
     "properties": {
-      "bookName": {
+      "id": {
         "type": "text"
       },
       "bookDate": {
@@ -214,6 +214,11 @@ input {
         record_last_run => "true"
         last_run_metadata_path => "/home/elasticsearch/logstash-7.8.1/config/book_index2_last_id"
     }
+}
+
+date {
+match => [ "modification_time", "yyyyMMddHHmm" ]
+timezone => "Asia/Shanghai"
 }
 
 output {

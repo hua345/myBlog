@@ -2,11 +2,21 @@
 
 ## 参考
 
-- [JAVA8十大新特性详解（精编)](https://www.jianshu.com/p/0bf8fe0f153b)
+- [JAVA8 十大新特性详解（精编)](https://www.jianshu.com/p/0bf8fe0f153b)
+
+从`Java 8`开始,`java.time`包提供了新的日期和时间API,主要涉及的类型有:
+
+- 本地日期和时间:`LocalDateTime`,`LocalDate`,`LocalTime`；
+- 带时区的日期和时间:`ZonedDateTime`;
+- 时刻:`Instant`;
+- 时区:`ZoneId`,`ZoneOffset`;
+- 时间间隔:`Duration`
+
+以及一套新的用于取代`SimpleDateFormat`的格式化类型`DateTimeFormatter`
 
 ## Timezones 时区
 
-在新API中时区使用`ZoneId`来表示。时区可以很方便的使用静态方法of来获取到。 时区定义了到UTS时间的时间差，在Instant时间点对象到本地日期对象之间转换的时候是极其重要的。
+在新 API 中时区使用`ZoneId`来表示。时区可以很方便的使用静态方法 of 来获取到。 时区定义了到 UTS 时间的时间差,在`Instant`时间点对象到本地日期对象之间转换的时候是极其重要的。
 
 ```java
     /**

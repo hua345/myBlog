@@ -13,6 +13,18 @@
 ➜  ~ kafka-topics.sh --create --bootstrap-server 192.168.137.128:9092 --replication-factor 3 --partitions 1 --topic fang
 # 创建双测试分区
 ➜  ~ kafka-topics.sh --create --bootstrap-server 192.168.137.128:9092 --replication-factor 3 --partitions 2 --topic fangfang
+kafka-topics.sh --describe --bootstrap-server 192.168.137.128:9092 --topic fang
+# 查看topic详情
+➜  ~ kafka-topics.sh --describe --bootstrap-server 192.168.137.128:9092 --topic fang
+Topic: fang     PartitionCount: 1       ReplicationFactor: 3    Configs: segment.bytes=1073741824
+        Topic: fang     Partition: 0    Leader: 2       Replicas: 2,0,1 Isr: 2,1,0
+# 修改分区数
+➜  ~ kafka-topics.sh --alter --bootstrap-server 192.168.137.128:9092 --topic fang --partitions 2
+# 查看topic详情
+➜  ~ kafka-topics.sh --describe --bootstrap-server 192.168.137.128:9092 --topic fang
+Topic: fang     PartitionCount: 2       ReplicationFactor: 3    Configs: segment.bytes=1073741824
+        Topic: fang     Partition: 0    Leader: 2       Replicas: 2,0,1 Isr: 2,1,0
+        Topic: fang     Partition: 1    Leader: 0       Replicas: 0,1,2 Isr: 0,1,2
 ```
 
 ## 2.测试单分区场景

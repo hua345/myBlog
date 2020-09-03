@@ -1,23 +1,58 @@
-[@Autowired](#Autowired)
+# @Autowired
 
-这个注解可以用于属性，setter方法，还有构造器上，这个注解用于注入依赖的对象。
+## [@Autowired](#Autowired)
 
-[@Qualifier](#Qualifier)
+> Spring Team recommends: "Always use constructor based dependency injection in your beans. Always use assertions for mandatory dependencies
+>
+> Spring团队建议: 使用构造函数注入
 
-@Autowired是根据类型进行自动装配的。如果有两个实现类，还要使用@Autowired注解，可以加@Qualifier指定需要注入的实现类。
+这个注解可以用于`属性`，`setter` 方法，还有`构造器`上，这个注解用于注入依赖的对象。
+
+有的时候写在变量上会报`空指针异常`NPE，然后通过写在`构造器`上就解决了此问题
+
+```java
+@Autowired
+private User user;
+private String school;
+
+public UserAccountServiceImpl(){
+    this.school = user.getSchool();
+}
+```
+
+因为Java类会`先执行构造方法`，然后再给注解了`@Autowired` 的`user`注入值，所以在`执行构造方法的时候`，就会报错。
+
+```java
+private User user;
+private String school;
+
+@Autowired
+public UserAccountServiceImpl(User user){
+    this.user = user;
+    this.school = user.getSchool();
+}
+```
+
+使用`构造器注入`的方法，可以`明确成员变量的加载顺序`。
+
+Java变量的初始化顺序为:`静态变量或静态语句块–>实例变量或初始化语句块–>构造方法–>@Autowired`
+
+## [@Qualifier](#Qualifier)
+
+`@Autowired` 是根据类型进行自动装配的。如果有两个实现类，还要使用`@Autowired`注解，可以加`@Qualifier`指定需要注入的实现类。
 
 `qualifier`的意思是合格者，通过这个标识，表明了哪个实现类才是我们所需要的.
 
-[@Resource](#Resource)
+## [@Resource](#Resource)
 
-@Resource的作用相当于@Autowired，只不过@Autowired按byType自动注入，而@Resource默认按 byName自动注入罢了。
+`@Resource` 的作用相当于`@Autowired`，只不过`@Autowired` 按 byType 自动注入，而`@Resource` 默认按 byName 自动注入罢了。
 
-@Resource装配顺序
+`@Resource` 装配顺序
 
-- 如果既没有指定name，又没有指定type，则自动按照byName方式进行装配；如果没有匹配，则回退为一个原始类型进行匹配，如果匹配则自动装配
-- 如果同时指定了name和type，则从Spring上下文中找到唯一匹配的bean进行装配，找不到则抛出异常
-- 如果指定了name，则从上下文中查找名称（id）匹配的bean进行装配，找不到则抛出异常
-- 如果指定了type，则从上下文中找到类型匹配的唯一bean进行装配，找不到或者找到多个，都会抛出异常
+- 如果既没有指定 name，又没有指定 type，则自动按照 byName 方式进行装配；如果没有匹配，则回退为一个原始类型进行匹配，如果匹配则自动装配
+- 如果同时指定了 name 和 type，则从 Spring 上下文中找到唯一匹配的 bean 进行装配，找不到则抛出异常
+- 如果指定了 name，则从上下文中查找名称（id）匹配的 bean 进行装配，找不到则抛出异常
+- 如果指定了 type，则从上下文中找到类型匹配的唯一 bean 进行装配，找不到或者找到多个，都会抛出异常
 
 ### 测试用例
 

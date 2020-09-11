@@ -34,12 +34,12 @@ public class DateUtil {
     public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public static String getCurrentDate() {
-        Date currentTime = new Date();
-        LocalDateTime time = LocalDateTime.ofInstant(currentTime.toInstant(), ZoneId.systemDefault());
+        LocalDateTime time = LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault());
         String dateString = formatter.format(time);
         return dateString;
     }
 }
+
 public class MyRunnable implements Runnable {
     public void run() {
         System.out.println(Thread.currentThread().getName() + " Start. Time = " + DateUtil.getCurrentDate());

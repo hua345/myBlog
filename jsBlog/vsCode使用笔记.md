@@ -13,3 +13,5 @@
 | Prettier - Code formatter          | 代码格式化          |
 | ESLint                             | 代码语法检查        |
 | vscode-icons                       | vscode 图标         |
+| Live server                        | 静态文件服务器      |
+| Rainbow Brackets                   | 彩虹括号            |

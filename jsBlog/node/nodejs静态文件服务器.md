@@ -1,4 +1,8 @@
-用js写点canvas画图，比如读取图片数据时，需要HTTP支持，所以用nodejs写了个静态文件服务器，不过后来也没怎没用用nginx了。
+# `nodejs`个静态文件服务器
+
+## 也可以用`vscode`的`Live server`
+
+`html`文件右键`Open With Live server`
 
 ```js
 var http        = require("http");

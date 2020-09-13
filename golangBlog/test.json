@@ -1,0 +1,48 @@
+[{
+    "host": "localhost",
+    "port": 8080,
+    "secure": false,
+    "metadata": {
+        "management.port": "8080"
+    },
+    "uri": "http://localhost:8080",
+    "serviceId": "A-BOOTIFUL-CLIENT",
+    "instanceInfo": {
+        "instanceId": "localhost:a-bootiful-client",
+        "app": "A-BOOTIFUL-CLIENT",
+        "appGroupName": null,
+        "ipAddr": "192.168.164.1",
+        "sid": "na",
+        "homePageUrl": "http://localhost:8080/",
+        "statusPageUrl": "http://localhost:8080/actuator/info",
+        "healthCheckUrl": "http://localhost:8080/actuator/health",
+        "secureHealthCheckUrl": null,
+        "vipAddress": "a-bootiful-client",
+        "secureVipAddress": "a-bootiful-client",
+        "countryId": 1,
+        "dataCenterInfo": {
+            "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
+            "name": "MyOwn"
+        },
+        "hostName": "localhost",
+        "status": "UP",
+        "overriddenStatus": "UNKNOWN",
+        "leaseInfo": {
+            "renewalIntervalInSecs": 30,
+            "durationInSecs": 90,
+            "registrationTimestamp": 1562378783523,
+            "lastRenewalTimestamp": 1562378933049,
+            "evictionTimestamp": 0,
+            "serviceUpTimestamp": 1562378783526
+        },
+        "isCoordinatingDiscoveryServer": false,
+        "metadata": {
+            "management.port": "8080"
+        },
+        "lastUpdatedTimestamp": 1562378783526,
+        "lastDirtyTimestamp": 1562378783027,
+        "actionType": "ADDED",
+        "asgName": null
+    },
+    "scheme": null
+}]

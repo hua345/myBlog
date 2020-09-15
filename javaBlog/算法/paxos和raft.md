@@ -8,8 +8,8 @@
 - [分布式一致性算法](https://www.jianshu.com/p/40dbe406d2f4)
 - [一致性算法](https://www.cnblogs.com/qmillet/p/12487412.html)
 - [分布式系统的经典基础理论](https://github.com/Snailclimb/JavaGuide/blob/6e6d9da410d5cac35a2339b1debfbe2782b5f85a/docs/system-design/website-architecture/%E5%88%86%E5%B8%83%E5%BC%8F.md)
-- [理解分布式一致性与Raft算法](https://www.cnblogs.com/mokafamily/p/11303534.html)
-- [Raft一致性算法论文的中文翻译](https://github.com/maemual/raft-zh_cn)
+- [理解分布式一致性与 Raft 算法](https://www.cnblogs.com/mokafamily/p/11303534.html)
+- [Raft 一致性算法论文的中文翻译](https://github.com/maemual/raft-zh_cn)
 - [分布式.md](https://github.com/CyC2018/CS-Notes/blob/f84b14041830ea38f1f2eb6061c3722aedc0e836/docs/notes/%E5%88%86%E5%B8%83%E5%BC%8F.md)
 
 ## `CAP`理论
@@ -36,7 +36,7 @@
 
 基本可用是指分布式系统在出现不可预知故障的时候，允许损失部分可用性。但是，这绝不等价于系统不可用。
 
-- `响应时间上的损失`:正常情况下，一个在线搜索引擎需要在0.5秒之内返回给用户相应的查询结果，但由于出现故障，查询结果的响应时间增加了1~2秒
+- `响应时间上的损失`:正常情况下，一个在线搜索引擎需要在 0.5 秒之内返回给用户相应的查询结果，但由于出现故障，查询结果的响应时间增加了 1~2 秒
 - `系统功能上的损失`：在一些节日大促购物高峰的时候，由于消费者的购物行为激增，为了保护购物系统的稳定性，部分消费者可能会被引导到一个降级页面
 
 ### 软状态
@@ -88,15 +88,15 @@ Google 的 Chubby 分布式锁服务，采用了 Paxos 算法
 
 ![2PC02](./img/2PC02.png)
 
-存在问题: 协调者如果发起提议后宕机，那么参与者会进入阻塞状态，等待参与者回应完成此次决议。此时需要一个协调者备份角色解决此问题，协调者宕机一段时间后，协调者备份接替协调者的工作，通过问询参与者的状态决定阶段2是否提交事务。
+存在问题: 协调者如果发起提议后宕机，那么参与者会进入阻塞状态，等待参与者回应完成此次决议。此时需要一个协调者备份角色解决此问题，协调者宕机一段时间后，协调者备份接替协调者的工作，通过问询参与者的状态决定阶段 2 是否提交事务。
 
 ## `Raft` 算法
 
 `Raft`算法的论文题目是`《In Search of an Understandable Consensus Algorithm (Extended Version)》`（`《寻找一种易于理解的一致性算法（扩展版）》`）
 
-很容易理解，Raft算法的初衷就是设计一个相较于Paxos更易于理解的强一致性算法
+很容易理解，Raft 算法的初衷就是设计一个相较于 Paxos 更易于理解的强一致性算法
 
-Raft算法中的三种角色
+Raft 算法中的三种角色
 
 - `Leader`领导者节点，负责发出提案
 - `Follower`追随者节点，负责同意`Leader`发出的提案
@@ -106,6 +106,8 @@ Raft算法中的三种角色
 
 `raft` 最关键的一个概念是`任期(term)`，每一个 `leader` 都有自己的`任期(term)`，必须在任期内发送心跳信息给 `follower` 来延长自己的`任期`。
 
+## 单个 Candidate 的竞选
+
 `Leader` 会周期性的发送心跳包给 `Follower`。每个 `Follower` 都设置了一个随机的竞选超时时间，一般为 `150ms~300ms`，如果在这个时间内没有收到 `Leader` 的心跳包，就会变成 `Candidate`，进入竞选阶段。
 
 ### 分布式系统的最初阶段
@@ -113,3 +115,43 @@ Raft算法中的三种角色
 此时只有 `Follower`，没有 `Leader`。`Follower A` 等待一个随机的竞选超时时间之后，没收到 `Leader` 发来的心跳包，因此进入竞选阶段。
 
 ![raftInit](./img/raftInit.gif)
+
+此时 Node A 发送投票请求给其它所有节点。
+
+![raftInit](./img/raftInit02.gif)
+
+- 其它节点会对请求进行回复，如果超过一半的节点回复了，那么该 Candidate 就会变成 Leader。
+
+![raftInit](./img/raftInit03.gif)
+
+- 之后 Leader 会周期性地发送心跳包给 Follower，Follower 接收到心跳包，会重新开始计时。
+
+![raftInit](./img/raftInit04.gif)
+
+## 多个 Candidate 竞选
+
+- 如果有多个 `Follower` 成为 `Candidate`，并且所获得票数相同，那么就需要重新开始投票。例如下图中 Node B 和 Node D 都获得两票，需要重新开始投票。
+
+![raftInit](./img/raftInit05.gif)
+
+- 由于每个节点设置的随机竞选超时时间不同，因此下一次再次出现多个 Candidate 并获得同样票数的概率很低。
+
+![raftInit](./img/raftInit06.gif)
+
+## 数据同步
+
+- 来自客户端的修改都会被传入 Leader。注意该修改还未被提交，只是写入日志中。
+
+![raftSync01](./img/raftSync01.gif)
+
+- Leader 会把修改复制到所有 Follower。
+
+![raftSync01](./img/raftSync02.gif)
+
+- Leader 会等待大多数的 Follower 也进行了修改，然后才将修改提交。
+
+![raftSync01](./img/raftSync03.gif)
+
+- 此时 Leader 会通知的所有 Follower 让它们也提交修改，此时所有节点的值达成一致。
+
+![raftSync01](./img/raftSync04.gif)

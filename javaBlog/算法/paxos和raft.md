@@ -11,6 +11,8 @@
 - [理解分布式一致性与 Raft 算法](https://www.cnblogs.com/mokafamily/p/11303534.html)
 - [Raft 一致性算法论文的中文翻译](https://github.com/maemual/raft-zh_cn)
 - [分布式.md](https://github.com/CyC2018/CS-Notes/blob/f84b14041830ea38f1f2eb6061c3722aedc0e836/docs/notes/%E5%88%86%E5%B8%83%E5%BC%8F.md)
+- [Raft算法详解](https://zhuanlan.zhihu.com/p/32052223)
+- [对Raft的理解](https://zhuanlan.zhihu.com/p/55070003)
 
 ## `CAP`理论
 
@@ -64,13 +66,14 @@
 模型：
 
 - DNS 系统
-- Gossip 协议
+- gossip 协议
 
 ### 一致性算法实现举例
 
 Google 的 Chubby 分布式锁服务，采用了 Paxos 算法
 `etcd`和`consul`分布式键值数据库，采用了`Raft`算法
 `ZooKeeper`分布式应用协调服务，Chubby 的开源实现，采用 ZAB 算法
+`redis cluster`集群,采用了`gossip`算法
 
 ## 两阶段提交
 
@@ -88,7 +91,10 @@ Google 的 Chubby 分布式锁服务，采用了 Paxos 算法
 
 ![2PC02](./img/2PC02.png)
 
-存在问题: 协调者如果发起提议后宕机，那么参与者会进入阻塞状态，等待参与者回应完成此次决议。此时需要一个协调者备份角色解决此问题，协调者宕机一段时间后，协调者备份接替协调者的工作，通过问询参与者的状态决定阶段 2 是否提交事务。
+存在问题: 
+
+- 协调者在 2PC 中起到非常大的作用，发生故障将会造成很大影响。特别是在提交阶段发生故障，所有参与者会一直同步阻塞等待，无法完成其它操作。
+- 在提交阶段，如果协调者只发送了部分 Commit 消息，此时网络发生异常，那么只有部分参与者接收到 Commit 消息，也就是说只有部分参与者提交了事务，使得系统数据不一致。
 
 ## `Raft` 算法
 
@@ -98,9 +104,9 @@ Google 的 Chubby 分布式锁服务，采用了 Paxos 算法
 
 Raft 算法中的三种角色
 
-- `Leader`领导者节点，负责发出提案
-- `Follower`追随者节点，负责同意`Leader`发出的提案
-- `Candidate`候选人，负责争夺`Leader`
+- `Leader`领导者节点: 接受客户端请求，并向`Follower`同步请求日志，当日志同步到大多数节点上后告诉`Follower`提交日志。
+- `Follower`追随者节点: 接受并持久化`Leader`同步的日志，在`Leader`告之日志可以提交之后，提交日志。
+- `Candidate`候选人，负责争夺`Leader`的临时角色
 
 `Raft`算法将一致性问题分解为两个的子问题，`Leader选举`和`状态复制`
 
@@ -138,11 +144,40 @@ Raft 算法中的三种角色
 
 ![raftInit](./img/raftInit06.gif)
 
-## 数据同步
+## 日志同步
 
-- 来自客户端的修改都会被传入 Leader。注意该修改还未被提交，只是写入日志中。
+- Leader选出后，就开始接收客户端的请求。`Leader`把请求作为日志条目（Log entries）加入到它的日志中,然后并行的向其他服务器发起`AppendEntries RPC`复制日志条目。注意该修改还未被提交，只是写入日志中。
 
 ![raftSync01](./img/raftSync01.gif)
+
+日志由有序编号（`log index`）的日志条目组成。每个日志条目包含它被创建时的任期号（`term`），和用于状态机执行的命令。
+
+![raftLog](./img/raftLog.jpg)
+
+Raft日志同步保证如下两点：
+
+- 如果不同日志中的两个条目有着相同的索引和任期号，则它们所存储的命令是相同的。
+- 如果不同日志中的两个条目有着相同的索引和任期号，则它们之前的所有条目都是完全一样的。
+
+第一条特性源于`Leader`在一个term内在给定的一个`log index`最多创建一条日志条目，同时该条目在日志中的位置也从来不会改变。
+
+第二条特性源于 `AppendEntries` 的一个简单的一致性检查。当发送一个 `AppendEntries RPC` 时，`Leader`会把新日志条目紧接着之前的条目的`log index`和`term`都包含在里面。如果`Follower`没有在它的日志中找到`log index`和`term`都相同的日志，它就会拒绝新的日志条目。
+
+一般情况下，Leader和Followers的日志保持一致，因此 AppendEntries 一致性检查通常不会失败。然而，Leader崩溃可能会导致日志不一致：旧的Leader可能没有完全复制完日志中的所有条目。
+
+![raftloss](./img/raftloss.jpg)
+
+相对于新的leader：
+
+- a、b 丢失了部分数据
+- c、d 多出来部分数据
+- e、f 既丢失， 又多出来了数据
+
+Leader通过强制Followers复制它的日志来处理日志的不一致，Followers上的不一致的日志会被Leader的日志覆盖。
+
+Leader为了使Followers的日志同自己的一致，Leader需要找到Followers同它的日志一致的地方，然后覆盖Followers在该位置之后的条目。
+
+Leader会从后往前试，每次AppendEntries失败后尝试前一个日志条目，直到成功找到每个Follower的日志一致位点，然后向后逐条覆盖Followers在该位置之后的条目。
 
 - Leader 会把修改复制到所有 Follower。
 
@@ -155,3 +190,25 @@ Raft 算法中的三种角色
 - 此时 Leader 会通知的所有 Follower 让它们也提交修改，此时所有节点的值达成一致。
 
 ![raftSync01](./img/raftSync04.gif)
+
+## 如何避免Leader宕机造成数据不一致
+
+Raft增加了如下两条限制以保证安全性
+
+### 选举限制
+
+假如某个candidate在选举成为leader时没有包含所有的已提交日志，这时就会出现日志顺序不一致的情况，在其他一致性算法中会在选举完成后进行补漏，但这大大增加了复杂性。而Raft则采用了一种简单的方式避免了这种情况的发生
+
+拥有最新的已提交的`log entry`的`Follower`才有资格成为`Leader`
+
+这个保证是在`RequestVote RPC`中做的，`Candidate`在发送`RequestVote RPC`时，要带上自己的最后一条日志的`term`和`log index`，假如`follower`的日志信息相较于`candidate`要更新，则拒绝这个选票，反之则同意该`candidate`成为`leader`
+
+### 延迟提交
+
+上面提到过，我们进行日志提交需要三个阶段：
+
+- leader将log复制到大多数followers
+- follower将日志复制，并告诉leader自己已经复制成功
+- leader收到了大多数followers的复制成功响应，并提交日志
+
+Leader只能推进commit index来提交当前term的已经复制到大多数服务器上的日志，旧term日志的提交要等到提交当前term的日志来间接提交（log index 小于 commit index的日志被间接提交）

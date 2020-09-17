@@ -108,17 +108,21 @@ Raft 算法中的三种角色
 - `Follower`追随者节点: 接受并持久化`Leader`同步的日志，在`Leader`告之日志可以提交之后，提交日志。
 - `Candidate`候选人，负责争夺`Leader`的临时角色
 
-`Raft`算法将一致性问题分解为两个的子问题，`Leader选举`和`状态复制`
+Raft要求系统在任意时刻最多只有一个Leader，正常工作期间只有Leader和Followers。
+
+## `Raft`算法将一致性问题分解
+
+- `leader选举`：在集群中选举出主节点对外提供服务
+- `日志复制`：通过日志复制，让从节点和主节点的状态保持一致
+- `安全措施` ( safety )：通过一些措施，保证服务出现问题依旧可用
 
 `raft` 最关键的一个概念是`任期(term)`，每一个 `leader` 都有自己的`任期(term)`，必须在任期内发送心跳信息给 `follower` 来延长自己的`任期`。
 
-## 单个 Candidate 的竞选
+### leader选举
 
-`Leader` 会周期性的发送心跳包给 `Follower`。每个 `Follower` 都设置了一个随机的竞选超时时间，一般为 `150ms~300ms`，如果在这个时间内没有收到 `Leader` 的心跳包，就会变成 `Candidate`，进入竞选阶段。
+- 分布式系统的最初阶段
 
-### 分布式系统的最初阶段
-
-此时只有 `Follower`，没有 `Leader`。`Follower A` 等待一个随机的竞选超时时间之后，没收到 `Leader` 发来的心跳包，因此进入竞选阶段。
+此时只有 `Follower`，没有 `Leader`。每个 `Follower` 都设置了一个随机的竞选超时时间，一般为 `150ms~300ms`，如果在这个时间内没有收到 `Leader` 的心跳包，就会变成 `Candidate`，进入竞选阶段。
 
 ![raftInit](./img/raftInit.gif)
 
@@ -130,19 +134,9 @@ Raft 算法中的三种角色
 
 ![raftInit](./img/raftInit03.gif)
 
-- 之后 Leader 会周期性地发送心跳包给 Follower，Follower 接收到心跳包，会重新开始计时。
+- 之后 `Leader` 会周期性的发送心跳包给 `Follower`，`Follower` 接收到心跳包，会重新开始计时。
 
 ![raftInit](./img/raftInit04.gif)
-
-## 多个 Candidate 竞选
-
-- 如果有多个 `Follower` 成为 `Candidate`，并且所获得票数相同，那么就需要重新开始投票。例如下图中 Node B 和 Node D 都获得两票，需要重新开始投票。
-
-![raftInit](./img/raftInit05.gif)
-
-- 由于每个节点设置的随机竞选超时时间不同，因此下一次再次出现多个 Candidate 并获得同样票数的概率很低。
-
-![raftInit](./img/raftInit06.gif)
 
 ## 日志同步
 
@@ -163,22 +157,6 @@ Raft日志同步保证如下两点：
 
 第二条特性源于 `AppendEntries` 的一个简单的一致性检查。当发送一个 `AppendEntries RPC` 时，`Leader`会把新日志条目紧接着之前的条目的`log index`和`term`都包含在里面。如果`Follower`没有在它的日志中找到`log index`和`term`都相同的日志，它就会拒绝新的日志条目。
 
-一般情况下，Leader和Followers的日志保持一致，因此 AppendEntries 一致性检查通常不会失败。然而，Leader崩溃可能会导致日志不一致：旧的Leader可能没有完全复制完日志中的所有条目。
-
-![raftloss](./img/raftloss.jpg)
-
-相对于新的leader：
-
-- a、b 丢失了部分数据
-- c、d 多出来部分数据
-- e、f 既丢失， 又多出来了数据
-
-Leader通过强制Followers复制它的日志来处理日志的不一致，Followers上的不一致的日志会被Leader的日志覆盖。
-
-Leader为了使Followers的日志同自己的一致，Leader需要找到Followers同它的日志一致的地方，然后覆盖Followers在该位置之后的条目。
-
-Leader会从后往前试，每次AppendEntries失败后尝试前一个日志条目，直到成功找到每个Follower的日志一致位点，然后向后逐条覆盖Followers在该位置之后的条目。
-
 - Leader 会把修改复制到所有 Follower。
 
 ![raftSync01](./img/raftSync02.gif)
@@ -191,11 +169,11 @@ Leader会从后往前试，每次AppendEntries失败后尝试前一个日志条�
 
 ![raftSync01](./img/raftSync04.gif)
 
-## 如何避免Leader宕机造成数据不一致
+### safety
 
 Raft增加了如下两条限制以保证安全性
 
-### 选举限制
+#### 选举safety限制
 
 假如某个candidate在选举成为leader时没有包含所有的已提交日志，这时就会出现日志顺序不一致的情况，在其他一致性算法中会在选举完成后进行补漏，但这大大增加了复杂性。而Raft则采用了一种简单的方式避免了这种情况的发生
 
@@ -203,12 +181,12 @@ Raft增加了如下两条限制以保证安全性
 
 这个保证是在`RequestVote RPC`中做的，`Candidate`在发送`RequestVote RPC`时，要带上自己的最后一条日志的`term`和`log index`，假如`follower`的日志信息相较于`candidate`要更新，则拒绝这个选票，反之则同意该`candidate`成为`leader`
 
-### 延迟提交
+#### 日志同步限制
 
-上面提到过，我们进行日志提交需要三个阶段：
+一般情况下，Leader和Followers的日志保持一致，因此 AppendEntries `一致性检查通常`不会失败。然而，Leader崩溃可能会导致日志不一致：旧的Leader可能没有完全复制完日志中的所有条目。
 
-- leader将log复制到大多数followers
-- follower将日志复制，并告诉leader自己已经复制成功
-- leader收到了大多数followers的复制成功响应，并提交日志
+Leader通过强制Followers复制它的日志来处理日志的不一致，Followers上的不一致的日志会被Leader的日志覆盖。
 
-Leader只能推进commit index来提交当前term的已经复制到大多数服务器上的日志，旧term日志的提交要等到提交当前term的日志来间接提交（log index 小于 commit index的日志被间接提交）
+Leader为了使Followers的日志同自己的一致，Leader需要找到Followers同它的日志一致的地方，然后覆盖Followers在该位置之后的条目。
+
+Leader会从后往前试，每次AppendEntries失败后尝试前一个日志条目，直到成功找到每个Follower的日志一致位点，然后向后逐条覆盖Followers在该位置之后的条目。

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import scrapy
-from weather.items import WeatherItem 
+from helloworld.items import HelloworldItem 
 
 class nanjingweatherSpider(scrapy.Spider):
-    name = 'weather'
+    name = 'helloworld'
     allowed_domains = ['http://www.tianqi.com/nanjing/']
     start_urls = ['http://www.tianqi.com/nanjing/']
 
@@ -24,7 +24,7 @@ class nanjingweatherSpider(scrapy.Spider):
         wendu1 = selector.xpath('div[@class="zxt_shuju"]/ul/li/span/text()').extract()
         wendu2 = selector.xpath('div[@class="zxt_shuju"]/ul/li/b/text()').extract()
         for i in range(7):
-            item = WeatherItem()
+            item = HelloworldItem()
             try:
                 item["cityDate"] = city[0] + date[i]  # 城市及日期
                 item["week"] = week[i]  # 星期

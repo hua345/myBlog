@@ -19,5 +19,5 @@ driver.find_element_by_id("su").click()
 print(driver.current_url)
 # 关闭当前页面，如果只有一个页面，会关闭浏览器
 # driver.close()
-# 关闭浏览器
-driver.quit()
+# # 关闭浏览器
+# driver.quit()

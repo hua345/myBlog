@@ -4,6 +4,8 @@
 - [https://scrapy.org/](https://scrapy.org/)
 - [https://github.com/marchtea/scrapy_doc_chs](https://github.com/marchtea/scrapy_doc_chs)
 
+Scrapy 是基于twisted框架开发而来，twisted是一个流行的事件驱动的python网络框架。因此Scrapy使用了一种非阻塞（又名异步）的代码来实现并发。
+
 ## scrapy安装
 
 ```bash

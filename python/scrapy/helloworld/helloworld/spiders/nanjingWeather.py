@@ -14,6 +14,7 @@ class nanjingweatherSpider(scrapy.Spider):
         yield scrapy.Request(self.start_urls[0], callback=self.parse, headers=headers)
 
     def parse(self, response):
+        print(response)
         items = []
         city = response.xpath('//dd[@class="name"]/h2/text()').extract()
         selector = response.xpath('//div[@class="day7"]')

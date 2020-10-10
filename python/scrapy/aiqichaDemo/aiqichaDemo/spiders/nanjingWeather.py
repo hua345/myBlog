@@ -101,7 +101,7 @@ class nanjingweatherSpider(scrapy.Spider):
             './/tr[9]/td[2]/text()').extract_first().strip()
         # 经营范围
         businessScope = basicBusiness.xpath(
-            './/tr[9]/td[last()]/text()').extract_first().strip()
+            './/tr[10]/td[last()]/div/text()').extract_first().strip()
 
         item["businessRegistration"] = {}
         # 法定代表人

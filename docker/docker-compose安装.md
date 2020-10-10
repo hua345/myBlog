@@ -24,7 +24,9 @@ mv docker-compose-Linux-x86_64 /usr/bin/docker-compose
 ## pip 安装
 
 ```bash
-➜  ~ pip install docker-compose
+➜  ~ dnf install python38
+➜  ~ dnf install python3-pip
+➜  ~ pip3 install docker-compose
 
 ➜  ~ docker-compose version
 docker-compose version 1.24.0, build 0aa59064

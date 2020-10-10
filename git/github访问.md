@@ -58,7 +58,7 @@ raw.githubusercontent.com
 185.199.109.153 assets-cdn.github.com
 185.199.108.153 assets-cdn.github.com
 
-151.101.76.133 raw.githubusercontent.com
+199.232.68.133 raw.githubusercontent.com
 13.250.162.133 githubusercontent.com
 ## GitHub End
 ## amazonaws Start

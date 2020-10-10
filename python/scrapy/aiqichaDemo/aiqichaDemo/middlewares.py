@@ -5,6 +5,8 @@
 
 from scrapy import signals
 
+import scrapy
+import time
 # useful for handling different item types with a single interface
 from itemadapter import is_item, ItemAdapter
 
@@ -78,7 +80,12 @@ class AiqichademoDownloaderMiddleware:
         # - or return a Request object
         # - or raise IgnoreRequest: process_exception() methods of
         #   installed downloader middleware will be called
-        return None
+        spider.browser.implicitly_wait(3)
+        spider.browser.get(url=request.url)
+        time.sleep(6)     # 等待加载,  可以用显示等待来优化.
+        row_response = spider.browser.page_source
+        # 参数url指当前浏览器访问的url(通过current_url方法获取), 在这里参数url也可以用request.url
+        return scrapy.http.HtmlResponse(url=spider.browser.current_url, body=row_response, encoding="utf8", request=request)
 
     def process_response(self, request, response, spider):
         # Called with the response returned from the downloader.

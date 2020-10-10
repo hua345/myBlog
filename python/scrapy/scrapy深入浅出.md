@@ -4,9 +4,9 @@
 - [https://scrapy.org/](https://scrapy.org/)
 - [https://github.com/marchtea/scrapy_doc_chs](https://github.com/marchtea/scrapy_doc_chs)
 
-Scrapy 是基于twisted框架开发而来，twisted是一个流行的事件驱动的python网络框架。因此Scrapy使用了一种非阻塞（又名异步）的代码来实现并发。
+Scrapy 是基于 twisted 框架开发而来，twisted 是一个流行的事件驱动的 python 网络框架。因此 Scrapy 使用了一种非阻塞（又名异步）的代码来实现并发。
 
-## scrapy安装
+## scrapy 安装
 
 ```bash
 pip3 install scrapy
@@ -69,6 +69,22 @@ class nanjingweatherSpider(scrapy.Spider):
         return items
         pass
 ```
+
+- `xpath()`: 传入 xpath 表达式，返回该表达式所对应的所有节点的 selector list 列表 。
+- `css()`: 传入 CSS 表达式，返回该表达式所对应的所有节点的 selector list 列表.
+- `extract()`: 序列化该节点为 unicode 字符串并返回 list。
+- `re()`: 根据传入的正则表达式对数据进行提取，返回 unicode 字符串 list 列表。
+
+### xpath 语法
+
+| 表达式   | 说明                                                       |
+| -------- | ---------------------------------------------------------- |
+| `nodename` | 选取此节点的所有子节点。                                   |
+| `/`        | 从根节点选取。                                             |
+| `//`       | 从匹配选择的当前节点选择文档中的节点，而不考虑它们的位置。 |
+| `.`        | 选取当前节点。                                             |
+| `..`       | 选取当前节点的父节点。                                     |
+| `@`        | 选取属性。                                                 |
 
 ### 编辑`item.py`
 

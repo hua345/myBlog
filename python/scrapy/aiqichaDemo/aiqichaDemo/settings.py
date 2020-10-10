@@ -6,12 +6,15 @@
 #     https://docs.scrapy.org/en/latest/topics/settings.html
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+import datetime
 
 BOT_NAME = 'aiqichaDemo'
 
 SPIDER_MODULES = ['aiqichaDemo.spiders']
 NEWSPIDER_MODULE = 'aiqichaDemo.spiders'
-
+# to_day = datetime.datetime.now()
+# log_file_path = 'scrapy_{}_{}_{}.log'.format(to_day.year, to_day.month, to_day.day)
+# LOG_FILE = log_file_path
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'aiqichaDemo (+http://www.yourdomain.com)'
@@ -49,15 +52,15 @@ ROBOTSTXT_OBEY = False
 
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-#SPIDER_MIDDLEWARES = {
+# SPIDER_MIDDLEWARES = {
 #    'aiqichaDemo.middlewares.AiqichademoSpiderMiddleware': 543,
-#}
+# }
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    'aiqichaDemo.middlewares.AiqichademoDownloaderMiddleware': 543,
-#}
+DOWNLOADER_MIDDLEWARES = {
+   'aiqichaDemo.middlewares.AiqichademoDownloaderMiddleware': 543,
+}
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
@@ -67,9 +70,9 @@ ROBOTSTXT_OBEY = False
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'aiqichaDemo.pipelines.AiqichademoPipeline': 300,
-#}
+ITEM_PIPELINES = {
+   'aiqichaDemo.pipelines.AiqichademoPipeline': 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html

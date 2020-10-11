@@ -5,8 +5,9 @@ from selenium.webdriver.chrome.options import Options    # 使用无头浏览器
 from aiqichaDemo.items import AiqichademoItem
 
 # 无头浏览器设置
-chorme_options = Options()
-chorme_options.add_argument('headless') 
+chrome_options = Options()
+chrome_options.add_argument('headless') 
+chrome_options.add_argument('--no-sandbox') 
 
 class nanjingweatherSpider(scrapy.Spider):
     name = 'aiqichaDemo'
@@ -14,7 +15,7 @@ class nanjingweatherSpider(scrapy.Spider):
 
     # 实例化一个浏览器对象
     def __init__(self):
-        self.browser = webdriver.Chrome(chrome_options=chorme_options)
+        self.browser = webdriver.Chrome(chrome_options=chrome_options)
         super().__init__()
         # 整个爬虫结束后关闭浏览器
 

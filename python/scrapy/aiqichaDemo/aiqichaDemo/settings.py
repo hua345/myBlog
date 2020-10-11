@@ -6,15 +6,11 @@
 #     https://docs.scrapy.org/en/latest/topics/settings.html
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-import datetime
 
 BOT_NAME = 'aiqichaDemo'
 
 SPIDER_MODULES = ['aiqichaDemo.spiders']
 NEWSPIDER_MODULE = 'aiqichaDemo.spiders'
-# to_day = datetime.datetime.now()
-# log_file_path = 'scrapy_{}_{}_{}.log'.format(to_day.year, to_day.month, to_day.day)
-# LOG_FILE = log_file_path
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'aiqichaDemo (+http://www.yourdomain.com)'

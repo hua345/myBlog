@@ -1,0 +1,7 @@
+[{"cityDate": "南京10月11日", "week": "星期日", "temperature": "24~14", "weather": "晴", "wind": "东风"},
+{"cityDate": "南京10月12日", "week": "星期一", "temperature": "24~16", "weather": "晴", "wind": "东北风"},
+{"cityDate": "南京10月13日", "week": "星期二", "temperature": "24~14", "weather": "晴", "wind": "东风"},
+{"cityDate": "南京10月14日", "week": "星期三", "temperature": "24~16", "weather": "晴转多云", "wind": "东风"},
+{"cityDate": "南京10月15日", "week": "星期四", "temperature": "19~15", "weather": "多云转雨", "wind": "东风"},
+{"cityDate": "南京10月16日", "week": "星期五", "temperature": "19~14", "weather": "阴转多云", "wind": "北风"},
+{"cityDate": "南京10月17日", "week": "星期六", "temperature": "22~14", "weather": "阴转多云", "wind": "东风"}]

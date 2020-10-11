@@ -6,7 +6,7 @@ from aiqichaDemo.items import AiqichademoItem
 
 # 无头浏览器设置
 chorme_options = Options()
-
+chorme_options.add_argument('headless') 
 
 class nanjingweatherSpider(scrapy.Spider):
     name = 'aiqichaDemo'

@@ -10,7 +10,6 @@ import time
 import codecs
 import json
 import os
-import codecs
 
 
 class AiqichademoPipeline:

@@ -25,7 +25,7 @@ class taobao_infos:
             'excludeSwitches', ['enable-automation'])
 
         self.browser = webdriver.Chrome(options=options)
-        self.wait = WebDriverWait(self.browser, 20)  # 超时时长为10s
+        self.wait = WebDriverWait(self.browser, 20,0.5)  # 超时时长为10s
 
     # 登录淘宝
 
@@ -41,7 +41,9 @@ class taobao_infos:
             "fm-login-password").send_keys(taobao_password)
         self.browser.find_element_by_css_selector(
             "#login-form > div.fm-btn > button").click()
-        time.sleep(1)
+        # time.sleep(1)
+        self.wait.until(EC.presence_of_element_located(
+            (By.CLASS_NAME, 's-baseinfo')))
         taobaoName = self.browser.find_element_by_xpath(
             '//div[@class="s-baseinfo"]/div[@class="s-name"]/a/em').text
         print(taobaoName)
@@ -69,12 +71,13 @@ class taobao_infos:
 # 爬取淘宝 我已买到的宝贝商品数据, pn 定义爬取多少页数据
     def crawl_good_buy_data(self, pn=3):
         # 对我已买到的宝贝商品数据进行爬虫
-        self.browser.get("https://buyertrade.taobao.com/trade/itemlist/list_bought_items.htm")
+        self.browser.get(
+            "https://buyertrade.taobao.com/trade/itemlist/list_bought_items.htm")
         # 遍历所有页数
         for page in trange(1, pn):
             data_list = []
             # 等待该页面全部已买到的宝贝商品数据加载完毕
-            good_total = self.wait.until(
+            self.wait.until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, '#tp-bought-root > div.js-order-container')))
             # 获取本页面源代码
             html = self.browser.page_source
@@ -85,15 +88,19 @@ class taobao_infos:
             # 遍历该页的所有宝贝
             for item in good_items:
                 # 商品购买时间、订单号
-                good_time_and_id = item.find('.bought-wrapper-mod__head-info-cell___29cDO').text().replace('\n', "").replace('\r', "")
+                good_time_and_id = item.find(
+                    '.bought-wrapper-mod__head-info-cell___29cDO').text().replace('\n', "").replace('\r', "")
                 # 商家名称
                 # good_merchant = item.find('.seller-mod__container___1w0Cx').text().replace('\n', "").replace('\r', "")
-                good_merchant = item.find('.bought-wrapper-mod__seller-container___3dAK3').text().replace('\n', "").replace('\r', "")
+                good_merchant = item.find(
+                    '.bought-wrapper-mod__seller-container___3dAK3').text().replace('\n', "").replace('\r', "")
                 # 商品名称
                 # good_name = item.find('.sol-mod__no-br___1PwLO').text().replace('\n', "").replace('\r', "")
-                good_name = item.find('.sol-mod__no-br___3Ev-2').text().replace('\n', "").replace('\r', "")
-                # 商品价格  
-                good_price = item.find('.price-mod__price___cYafX').text().replace('\n', "").replace('\r', "")
+                good_name = item.find(
+                    '.sol-mod__no-br___3Ev-2').text().replace('\n', "").replace('\r', "")
+                # 商品价格
+                good_price = item.find(
+                    '.price-mod__price___cYafX').text().replace('\n', "").replace('\r', "")
                 # 只列出商品购买时间、订单号、商家名称、商品名称
                 # 其余的请自己实践获取
                 data_list.append(good_time_and_id)
@@ -105,28 +112,27 @@ class taobao_infos:
     def get_product(self):
         url = 'https://s.taobao.com/search?q=牛奶'
         self.browser.get(url)
-        time.sleep(1)
+        # time.sleep(1)
+        self.wait.until(EC.presence_of_element_located(
+            (By.ID, 'mainsrp-itemlist')))
         html_str = self.browser.page_source
         obj_list = etree.HTML(html_str).xpath(
-            '//div[@id="mainsrp-itemlist"]').xpath('.//div[@class="item"]')
-        print(obj_list)
-
-        print(obj_list)
+            '//div[@id="mainsrp-itemlist"]//div[@class="items"][1]/div')
         data_list = []
         for obj in obj_list:
             item = {}
             item['price'] = obj.xpath(
-                './/div[@class="price g_price"]/strong//text()')
+                './/div[@class="price g_price g_price-highlight"]/strong/text()')[0]
             item['title'] = obj.xpath(
-                './/div[@class="row row-2 title"]/a//text()')
+                './/div[@class="row row-2 title"]/a')[0].xpath('string(.)').replace('\n', '').strip()
             item['shop'] = obj.xpath(
-                './/div[@class="shop"]/a/span[last()]//text()')
+                './/div[@class="shop"]/a/span[last()]/text()')[0]
             print(item)
             data_list.append(item)
 # 使用教程：
 # 1.下载chrome浏览器:https://www.google.com/chrome/
 # 2.查看chrome浏览器的版本号，下载对应版本号的chromedriver驱动:http://chromedriver.storage.googleapis.com/index.html
-# 3.填写chromedriver的绝对路径
+# 3.将chromedriver放到python目录
 # 4.执行命令pip install selenium
 
 
@@ -138,5 +144,5 @@ if __name__ == "__main__":
     a = taobao_infos()
     a.login()  # 登录
     a.crawl_good_buy_data()
-    # a.get_addr()
-    # a.get_product()
+    a.get_addr()
+    a.get_product()

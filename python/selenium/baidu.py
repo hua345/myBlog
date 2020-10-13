@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from lxml import etree
 import time
+import xlsxwriter
 
 base_url = "https://www.baidu.com/"
 driver = webdriver.Chrome()
@@ -29,9 +30,19 @@ time.sleep(1)
 html_str = driver.page_source
 obj_list = etree.HTML(html_str).xpath(
     '//div[@id="content_left"]//div[contains(@class,"result")]/h3/a')
+result = ['标题']
 for obj in obj_list:
     title = obj.xpath('string(.)').replace('\n', '').strip()
     print(title)
+    result.append(title)
+
+workbook = xlsxwriter.Workbook('baidu.xlsx')  #创建一个Excel文件
+worksheet = workbook.add_worksheet()               #创建一个sheet
+# 列宽
+worksheet.set_column('A:J', 20)
+#向 excel 中写入数据
+worksheet.write_column('A1',result)
+workbook.close()
 
 # 关闭当前页面，如果只有一个页面，会关闭浏览器
 # driver.close()

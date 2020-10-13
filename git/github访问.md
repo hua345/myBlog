@@ -43,10 +43,10 @@ raw.githubusercontent.com
 
 ```conf
 ## GitHub Start
+140.82.114.3 github.com
+140.82.114.4 github.com
 140.82.113.3 github.com
 140.82.113.4 github.com
-13.250.177.223 github.com
-140.82.114.4 github.com
 192.30.253.118 gist.github.com
 151.101.109.194 github.global.ssl.fastly.net
 31.13.64.49 github.global.ssl.fastly.net
@@ -58,8 +58,9 @@ raw.githubusercontent.com
 185.199.109.153 assets-cdn.github.com
 185.199.108.153 assets-cdn.github.com
 
-199.232.68.133 raw.githubusercontent.com
+151.101.76.133 raw.githubusercontent.com
 13.250.162.133 githubusercontent.com
+199.232.68.133 githubusercontent.com
 ## GitHub End
 ## amazonaws Start
 52.216.168.133 s3.amazonaws.com

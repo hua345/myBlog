@@ -41,21 +41,6 @@ const browser = await puppeteer.launch({ headless: false });
 const browser = await puppeteer.launch({ executablePath: "/path/to/Chrome" });
 ```
 
-## 获取元素及元素属性
-
-- `page.$(selector)` ,`page.mainFrame().$(selector)`的缩写,相当于`document.querySelector`
-- `page.$$(selector)` ,`page.mainFrame().$$(selector)`的缩写,相当于`document.querySelectorAll`
-- `page.$$eval(selector, pageFunction[, ...args])`,相当于`Array.from(document.querySelectorAll(selector))`
-
-```js
-const divCount = await page.$$eval('div', divs => divs.length);
-const options = await page.$$eval('div > span.options', options => options.map(option => option.textContent))
-const searchValue = await page.$eval('#search', el => el.value);
-const preloadHref = await page.$eval('link[rel=preload]', el => el.href);
-const text = await page.$eval('.text', el => el.textContent);
-const html = await page.$eval('.main-container',e => e.outerHTML);
-```
-
 - `page.type` 获取输入框焦点并输入文字
 - `page.keyboard.press` 模拟键盘按下某个按键，目前 mac 上组合键无效为已知 bug
 - `page.waitFor` 页面等待，可以是时间、某个元素、某个函数

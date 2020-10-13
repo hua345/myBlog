@@ -1,7 +1,7 @@
 const puppeteer = require("puppeteer");
 
 (async () => {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch((options = { timeout: 50000 }));
   const page = await browser.newPage();
   await page.goto("https://github.com/trending");
   await page.screenshot({
@@ -17,7 +17,9 @@ const puppeteer = require("puppeteer");
     // }
   });
   // await page.waitForSelector(".Box > .Box-row");
-  const result = await page.$$eval(".Box > .Box-row > h1 > a", eles => eles.map(ele => ele.innerText));
+  const result = await page.$$eval(".Box > .Box-row > h1", (eles) =>
+    eles.map((ele) => ele.innerText)
+  );
   console.log(result);
 
   await browser.close();

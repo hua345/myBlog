@@ -7,7 +7,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from lxml import etree
 from pyquery import PyQuery as pq
 from tqdm import trange
-
+import xlsxwriter
+import os
 # 定义一个taobao类
 
 
@@ -25,7 +26,7 @@ class taobao_infos:
             'excludeSwitches', ['enable-automation'])
 
         self.browser = webdriver.Chrome(options=options)
-        self.wait = WebDriverWait(self.browser, 20,0.5)  # 超时时长为10s
+        self.wait = WebDriverWait(self.browser, 10, 0.5)  # 超时时长为10s
 
     # 登录淘宝
 
@@ -129,6 +130,37 @@ class taobao_infos:
                 './/div[@class="shop"]/a/span[last()]/text()')[0]
             print(item)
             data_list.append(item)
+        self.saveProductToExcel(data_list)
+
+    def saveProductToExcel(self, products):
+        baseDir = "C:\\Users\\Administrator\\Desktop\\excel"
+        excelName = 'taobaoProduct.xlsx'
+        if not os.path.exists(baseDir):
+            os.makedirs(baseDir)
+        #创建一个Excel文件
+        workbook = xlsxwriter.Workbook(os.path.join(baseDir,excelName)) 
+        worksheet = workbook.add_worksheet()  # 创建一个sheet
+        header_format = workbook.add_format({
+            'bold': True, 'font_size': 15
+        })
+        header_format.set_align('center')  # 水平对齐
+        header_format.set_align('vcenter')  # 垂直对齐
+        header_format.set_text_wrap()  # 内容换行
+        # 列宽
+        worksheet.set_column('A:J', 20)
+        # 自动过滤
+        worksheet.autofilter('A1:C'+str(len(products)+1))
+        # https://www.jianshu.com/p/c13b24d04730
+        # 向 excel 中写入数据
+        data1 = ['商品', '价格', '店铺']
+        worksheet.write_row('A1', data1,header_format)
+        for index, item in enumerate(products):
+            data = []
+            data.append(item.get("title", ''))
+            data.append(item.get("price", ''))
+            data.append(item.get("shop", ''))
+            worksheet.write_row('A'+str(2+index), data)
+        workbook.close()
 # 使用教程：
 # 1.下载chrome浏览器:https://www.google.com/chrome/
 # 2.查看chrome浏览器的版本号，下载对应版本号的chromedriver驱动:http://chromedriver.storage.googleapis.com/index.html
@@ -143,6 +175,6 @@ if __name__ == "__main__":
 
     a = taobao_infos()
     a.login()  # 登录
-    a.crawl_good_buy_data()
-    a.get_addr()
+    # a.crawl_good_buy_data()
+    # a.get_addr()
     a.get_product()

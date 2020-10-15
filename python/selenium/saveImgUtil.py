@@ -25,7 +25,11 @@ def downloadImgs(dirName, imgUrls):
         # 组装图片的绝对路径，用isbn来命名
         img_path = os.path.join(path, imgName)
         req = request.Request(imgUrl, headers=requestHeader)
-        data = request.urlopen(req, timeout=300).read()
-        f = open(img_path, 'wb')
-        f.write(data)
-        f.close()
+        try:
+            data = request.urlopen(req, timeout=300).read()
+            f = open(img_path, 'wb')
+            f.write(data)
+            f.close()
+        except Exception as err:
+	        print(err)
+        

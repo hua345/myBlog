@@ -13,7 +13,7 @@ from saveImgUtil import downloadImgs
 options = webdriver.ChromeOptions()
 options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
 
-base_url = "https://www.zhihu.com/question/26037846"
+base_url = "https://www.zhihu.com/question/421019418"
 driver = webdriver.Chrome(options=options)
 wait = WebDriverWait(driver, 10, 0.5)
 driver.implicitly_wait(3)

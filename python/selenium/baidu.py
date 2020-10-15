@@ -2,12 +2,20 @@ from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
+
 from lxml import etree
 import time
 import xlsxwriter
 
+options = webdriver.ChromeOptions()
+#找到本地安装的浏览器启动路径，例如Chrome
+#设置--user-data-dir是为了不影响自己的浏览器
+#chrome.exe --remote-debugging-port=9222 --user-data-dir="D:\Program File\chromeUserData"
+options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
+
+
 base_url = "https://www.baidu.com/"
-driver = webdriver.Chrome()
+driver = webdriver.Chrome(options=options)
 wait = WebDriverWait(driver, 10, 0.5)
 
 driver.implicitly_wait(3)
@@ -17,7 +25,10 @@ driver.get(base_url)
 print(driver.title)
 # 生成当前页面快照并保存
 # driver.save_screenshot("baidu.png")
-
+wait.until(EC.presence_of_element_located((By.ID, 's-top-username')))
+print(driver.find_element_by_xpath('//a[@id="s-top-username"]/span[last()]').text)
+print(driver.find_element_by_id('s-top-username').text)
+print(driver.find_element_by_id('s-top-username').find_element_by_xpath('./span[last()]').text)
 driver.find_element_by_id("kw").click()
 driver.find_element_by_id("kw").send_keys("selenium")
 driver.find_element_by_id("su").click()
@@ -47,4 +58,4 @@ workbook.close()
 # 关闭当前页面，如果只有一个页面，会关闭浏览器
 # driver.close()
 # # 关闭浏览器
-# driver.quit()
+driver.quit()

@@ -22,8 +22,10 @@ class taobao_infos:
         options = webdriver.ChromeOptions()
         # options.add_experimental_option("prefs", {"profile.managed_default_content_settings.images": 2}) # 不加载图片,加快访问速度
         # 此步骤很重要，设置为开发者模式，防止被各大网站识别出来使用了Selenium
-        options.add_experimental_option(
-            'excludeSwitches', ['enable-automation'])
+        # options.add_experimental_option(
+        #     'excludeSwitches', ['enable-automation'])
+        # 使用本地浏览器，免登录
+        options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
 
         self.browser = webdriver.Chrome(options=options)
         self.wait = WebDriverWait(self.browser, 10, 0.5)  # 超时时长为10s
@@ -137,8 +139,8 @@ class taobao_infos:
         excelName = 'taobaoProduct.xlsx'
         if not os.path.exists(baseDir):
             os.makedirs(baseDir)
-        #创建一个Excel文件
-        workbook = xlsxwriter.Workbook(os.path.join(baseDir,excelName)) 
+        # 创建一个Excel文件
+        workbook = xlsxwriter.Workbook(os.path.join(baseDir, excelName))
         worksheet = workbook.add_worksheet()  # 创建一个sheet
         header_format = workbook.add_format({
             'bold': True, 'font_size': 15
@@ -153,7 +155,7 @@ class taobao_infos:
         # https://www.jianshu.com/p/c13b24d04730
         # 向 excel 中写入数据
         data1 = ['商品', '价格', '店铺']
-        worksheet.write_row('A1', data1,header_format)
+        worksheet.write_row('A1', data1, header_format)
         for index, item in enumerate(products):
             data = []
             data.append(item.get("title", ''))
@@ -174,7 +176,7 @@ if __name__ == "__main__":
     taobao_password = "淘宝密码"  # 改成你的淘宝密码
 
     a = taobao_infos()
-    a.login()  # 登录
+    # a.login()  # 登录
     # a.crawl_good_buy_data()
     # a.get_addr()
     a.get_product()

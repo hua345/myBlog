@@ -1,7 +1,9 @@
+# [https://github.com/httpie/httpie](https://github.com/httpie/httpie)
+
 > HTTPie 是一个 HTTP 的命令行客户端，目标是让 CLI 和 web 服务之间的交互尽可能的人性化。
 > 允许通过自然的语法发送任意 HTTP 请求数据，展示色彩化的输出。
 
-#### 1. 主要特性
+## 1. 主要特性
 
 - 直观的语法
 - 格式化和色彩化的终端输出
@@ -13,13 +15,18 @@
 - 持久性会话
 - 类 Wget 下载
 
-#### 2.1 安装 httpie
+### 2.1 安装 httpie
 
 ```bash
+# linux
 yum install httpie
+
+# windows
+$ pip install --upgrade pip setuptools
+$ pip install --upgrade httpie
 ```
 
-#### 2.2 查看 httpie 版本
+### 2.2 查看 httpie 版本
 
 ```bash
 ➜  ~ http --debug
@@ -32,7 +39,7 @@ Python 2.7.5 (default, Apr  9 2019, 14:30:50)
 Linux 3.10.0-957.12.2.el7.x86_64
 ```
 
-#### 2.3 查看帮助
+### 2.3 查看帮助
 
 ```bash
 ➜  ~ http --help
@@ -53,7 +60,7 @@ usage: http [--json] [--form] [--pretty {all,colors,format,none}]
 HTTPie - a CLI, cURL-like tool for humans. <http://httpie.org>
 ```
 
-#### 2.4 参数说明
+### 2.4 参数说明
 
 ```bash
 METHOD
@@ -106,7 +113,7 @@ Output Options:
 | Raw JSON fields field:=json, field:=@file.json | Useful when sending JSON and one or more fields need to be a Boolean, Number, nested Object, or an Array, e.g., meals:='["ham","spam"]' or pies:=[1,2,3] (note the quotes). |
 | Form File Fields field@/dir/file               | Only available with --form, -f. For example screenshot@~/Pictures/img.png. The presence of a file field results in a multipart/form-data request.                           |
 
-#### 3.1 httpie 使用
+### 3.1 httpie 使用
 
 ```bash
 ➜  ~ http httpie.org
@@ -122,7 +129,7 @@ Transfer-Encoding: chunked
 Vary: Accept-Encoding
 ```
 
-#### 3.2 只显示 Header
+### 3.2 只显示 Header
 
 ```bash
 ➜  ~ http -h https://github.com
@@ -137,7 +144,7 @@ Referrer-Policy: origin-when-cross-origin, strict-origin-when-cross-origin
 Server: GitHub.com
 ```
 
-#### 3.3 post json
+### 3.3 post json
 
 ```bash
 ➜  ~ http http://192.168.137.128:4151/pub\?topic\=test  hello=world --verbose
@@ -163,7 +170,7 @@ X-Nsq-Content-Type: nsq; version=1.0
 OK
 ```
 
-#### 3.3 postjson
+### 3.3 postjson
 
 ```bash
 ➜  ~ http http://192.168.137.128:4151/pub\?topic\=test  hello=world --verbose

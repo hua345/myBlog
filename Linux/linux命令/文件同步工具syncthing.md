@@ -1,9 +1,10 @@
-[syncthing](https://github.com/syncthing/syncthing)
+# [syncthing](https://github.com/syncthing/syncthing)
 
-> Syncthing is a continuous file synchronization program. It synchronizes files between two or more computers. 
+> Syncthing is a continuous file synchronization program. It synchronizes files between two or more computers.
 
-#### 1.1 Linux 编译安装
-```
+## 1.1 Linux 编译安装
+
+```bash
 # This should output "go version go1.12" or higher.
 $ go version
 
@@ -20,8 +21,10 @@ $ cd syncthing
 # You should be inside ~/dev/syncthing right now.
 $ go run build.go
 ```
-#### 1.2 windows编译安装
-```
+
+## 1.2 windows 编译安装
+
+```bash
 # This should output "go version go1.12" or higher.
 > go version
 
@@ -32,15 +35,19 @@ $ go run build.go
 > cd syncthing
 > go run build.go
 ```
+
 编译后可执行文件`syncthing`在`bin`目录
 
-#### 1.3 移动到bin目录
-```
+## 1.3 移动到 bin 目录
+
+```bash
 mv ./bin/syncthing /usr/local/bin/syncthing
 source /etc/profile
 ```
-#### 2.1 启动syncthing
-```
+
+## 2.1 启动 syncthing
+
+```bash
 [root@dockerMaster syncthing]# ./bin/syncthing
 [monitor] 12:38:31 INFO: Starting syncthing
 [start] 12:38:31 INFO: Generating ECDSA key and certificate for syncthing...
@@ -66,11 +73,14 @@ source /etc/profile
 [FOWNB] 12:38:32 INFO: GUI and API listening on 127.0.0.1:8384
 [FOWNB] 12:38:32 INFO: Access the GUI via the following URL: http://127.0.0.1:8384/
 ```
+
 ![syncthing01](./img/syncthing/syncthing01.png)
 
-#### 2.2 后台运行syncthing
-#### 3. 配置syncthing
-```
+## 2.2 后台运行 syncthing
+
+## 3. 配置 syncthing
+
+```bash
 [root@dockerMaster ~]# ls ~/.config/syncthing/
 cert.pem  config.xml  https-cert.pem  https-key.pem  index-v0.14.0.db  key.pem
 
@@ -84,12 +94,14 @@ cert.pem  config.xml  https-cert.pem  https-key.pem  index-v0.14.0.db  key.pem
     </gui>
 </configuration>
 ```
+
 将`127.0.0.1:8384`改为`0.0.0.0:8384`,重启`syncthing`
 
 ![syncthing02](./img/syncthing/syncthing02.png)
 
-#### 4. 开放端口
-```
+## 4. 开放端口
+
+```bash
 iptables -A INPUT -p tcp --dport 8384 -j ACCEPT
 
 iptables -A OUTPUT -p tcp --sport 8384 -j ACCEPT
@@ -106,19 +118,26 @@ service iptables save
 #重启iptables
 systemctl restart iptables
 ```
-#### 5. 共享文件
-#### 5.1 显示设备标识
+
+## 5. 共享文件
+
+### 5.1 显示设备标识
+
 `右上角的操作 -> 显示ID`
 ![syncthing03](./img/syncthing/syncthing03.png)
 
-#### 5.2 添加远程设备
+### 5.2 添加远程设备
+
 ![syncthing04](./img/syncthing/syncthing04.png)
 
-#### 5.3 接受远程设备连接
+### 5.3 接受远程设备连接
+
 ![syncthing05](./img/syncthing/syncthing05.png)
 
-#### 5.4 共享文件夹给远程
+### 5.4 共享文件夹给远程
+
 ![syncthing06](./img/syncthing/syncthing06.png)
 
-#### 5.5 查看同步状态
+### 5.5 查看同步状态
+
 ![syncthing07](./img/syncthing/syncthing07.png)

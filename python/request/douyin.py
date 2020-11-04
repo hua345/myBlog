@@ -56,21 +56,36 @@ class DouYin(object):
         userInfo["uid"] = respJson["user_info"]["uid"]
         # 获取用户发布的视频
         print(userInfo["uid"])
+        self.getUserSign(userInfo, sec_uid)
+        return userInfo
+
+    def getUserSign(self, userInfo, sec_uid):
+        time.sleep(0.1)
         signature = self.generateSignature(userInfo["uid"])
         print("signature: "+signature)
         userVideoUrl = "https://www.iesdouyin.com/web/api/v2/aweme/post/?sec_uid=" + \
             sec_uid + "&count=21&max_cursor=0&aid=1128&_signature="+signature
-
         print("request: "+userVideoUrl)
         userVideoResp = requests.get(userVideoUrl)
-        print(json.dumps(userVideoResp.json(), sort_keys=True, indent=4))
-        return userInfo
+        aweme_list = userVideoResp.json()["aweme_list"]
+        if len(aweme_list) >= 1: 
+             for item in aweme_list:
+                print(item.get("desc"))
+                vid = item.get("aweme_id")
+                # 获取视频信息
+                videoInfo = self.getVideoInfo(vid)
+                # 将地址里的playwm改为play就是无水印播放地址了,头部user-agent需要手机user-agent
+                videoInfo["mp4Url"] = videoInfo["mp4Url"].replace("playwm", "play")
+                print(videoInfo)
+                self.downloadVideoAndAudio(videoInfo)
+        else:
+            self.getUserSign(userInfo,sec_uid)
 
     @staticmethod
     def generateSignature(value):
         p = os.popen('node fuck-byted-acrawler.js %s' % value)
         return (p.readlines()[0]).strip()
-    
+
     def getVideoInfo(self, videoId):
         infoUrl = "https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids="+videoId
         print("request: "+infoUrl)
@@ -113,7 +128,7 @@ class DouYin(object):
 
 if __name__ == '__main__':
     # 分享链接,视频
-    # shareUrl = "https://v.douyin.com/JmenG65/"
+    #shareUrl = "https://v.douyin.com/JmenG65/"
     # 用户分享
     shareUrl = "https://v.douyin.com/JmRvpUD/"
     baseDir = "C:\\Users\\Administrator\\Desktop\\douyin"

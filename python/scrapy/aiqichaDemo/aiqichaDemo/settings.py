@@ -68,6 +68,7 @@ DOWNLOADER_MIDDLEWARES = {
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    'aiqichaDemo.pipelines.AiqichademoPipeline': 300,
+   'aiqichaDemo.mysqlPipline.MySQLPipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

@@ -12,8 +12,14 @@ chrome_options.add_argument('--disable-gpu')
 
 class nanjingweatherSpider(scrapy.Spider):
     name = 'aiqichaDemo'
-    start_urls = ['https://aiqicha.baidu.com/company_detail_28676206903744']
-
+    # 平安、华为、腾讯、阿里、头条、百度
+    start_urls = ['https://aiqicha.baidu.com/company_detail_28676206903744'
+    'https://aiqicha.baidu.com/company_detail_31370200772422',
+    'https://aiqicha.baidu.com/company_detail_31610236813812',
+    'https://aiqicha.baidu.com/company_detail_71012705684989',
+    'https://aiqicha.baidu.com/company_detail_15938122212270',
+    'https://aiqicha.baidu.com/company_detail_28783255028393']
+    #start_urls = ['https://aiqicha.baidu.com/company_detail_71012705684989']
     # 实例化一个浏览器对象
     def __init__(self):
         self.browser = webdriver.Chrome(chrome_options=chrome_options)
@@ -27,24 +33,25 @@ class nanjingweatherSpider(scrapy.Spider):
         headers = {
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36'
         }
-        yield scrapy.Request(self.start_urls[0], callback=self.parse, headers=headers)
-
+        for url in self.start_urls:
+            yield scrapy.Request(url, callback=self.parse, headers=headers)
+        
     def parse(self, response):
         items = []
         item = AiqichademoItem()
         companyHeader = response.xpath('//div[@class="header-content"]')
         companyName = companyHeader.xpath(
-            './/h2[@class="name"]/text()').extract()
+            './/h2[@class="name"]/text()').extract_first()
         companyPhone = companyHeader.xpath(
-            './/div[@class="content-info-child"][1]/p[1]/span/text()').extract()
+            './/div[@class="content-info-child"][1]/p[1]/span/text()').extract_first()
         companyEmail = companyHeader.xpath(
-            './/div[@class="content-info-child"][1]/p[2]/span/text()').extract()
+            './/div[@class="content-info-child"][1]/p[2]/span/text()').extract_first()
         officialWebsite = companyHeader.xpath(
-            './/div[@class="content-info-child"][2]/p[1]/a/text()').extract()
+            './/div[@class="content-info-child"][2]/p[1]/a/text()').extract_first()
         companyAddress = companyHeader.xpath(
-            './/div[@class="content-info-child"][2]/p[2]/span/text()').extract()
+            './/div[@class="content-info-child"][2]/p[2]/span/text()').extract_first()
         companyProfile = companyHeader.xpath(
-            './/div[@class="content-info-child-brief"]/div/text()').extract()
+            './/div[@class="content-info-child-brief"]/div/text()').extract_first().strip()
         item["companyName"] = companyName
         item["companyPhone"] = companyPhone
         item["companyEmail"] = companyEmail

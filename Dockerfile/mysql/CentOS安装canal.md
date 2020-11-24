@@ -59,6 +59,23 @@ tar zxvf canal.adapter-1.1.5-SNAPSHOT.tar.gz  -C /usr/local/canal_adapter
 tar zxvf canal.admin-1.1.5-SNAPSHOT.tar.gz  -C /usr/local/canal_admin
 ```
 
+## 检查数据库是否开启binlog
+
+```sql
+mysql> show variables like '%log_bin%';
++---------------------------------+-----------------------------+
+| Variable_name                   | Value                       |
++---------------------------------+-----------------------------+
+| log_bin                         | ON                          |
+| log_bin_basename                | /var/lib/mysql/binlog       |
+| log_bin_index                   | /var/lib/mysql/binlog.index |
+| log_bin_trust_function_creators | OFF                         |
+| log_bin_use_v1_row_events       | OFF                         |
+| sql_log_bin                     | ON                          |
++---------------------------------+-----------------------------+
+6 rows in set (0.01 sec)
+```
+
 ## `canal deployer`配置
 
 `vi /usr/local/canal_deployer/conf/canal.properties`

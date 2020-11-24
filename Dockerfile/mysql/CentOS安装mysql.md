@@ -94,8 +94,35 @@ mysql> ALTER USER 'root'@'localhost' IDENTIFIED BY 'MyNewPass4!';
 Query OK, 0 rows affected (0.01 sec)
 # 查看验证密码规则
 mysql> show variables like 'validate_password%';
++--------------------------------------+--------+
+| Variable_name                        | Value  |
++--------------------------------------+--------+
+| validate_password.check_user_name    | ON     |
+| validate_password.dictionary_file    |        |
+| validate_password.length             | 8      |
+| validate_password.mixed_case_count   | 1      |
+| validate_password.number_count       | 1      |
+| validate_password.policy             | MEDIUM |
+| validate_password.special_char_count | 1      |
++--------------------------------------+--------+
+7 rows in set (0.00 sec)
+# validate_password_policy决定密码的验证策略,默认等级为MEDIUM(中等),可通过以下命令修改为LOW(低)
+mysql> set global validate_password.policy=0;
+Query OK, 0 rows affected (0.00 sec)
+mysql> set global validate_password.length=4;
+Query OK, 0 rows affected (0.00 sec)
 #允许root远程登录
 mysql> CREATE USER 'root'@'%' IDENTIFIED BY 'password';
+# 查询用户权限
+mysql> select * from mysql.user where user='root' and host='%' \G;
+*************************** 1. row ***************************
+                    Host: %
+                    User: root
+             Select_priv: Y
+             Insert_priv: Y
+             Update_priv: Y
+             Delete_priv: Y
+
 mysql> GRANT ALL PRIVILEGES ON *.* TO 'root'@'%'WITH GRANT OPTION;
 mysql> FLUSH PRIVILEGES;
 # 设置防火墙

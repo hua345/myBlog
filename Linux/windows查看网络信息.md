@@ -59,13 +59,13 @@ netstat -abno
   TCP    127.0.0.1:51142        127.0.0.1:51143        ESTABLISHED     36856
 
 # 查看网络连接数：
-netstat -an |wc -l
+netstat -abno |wc -l
 # 查看进程连接数
-netstat -an |grep 39868 |wc -l
+netstat -abno |grep 39868 |wc -l
 # 查看连接数等待time_wait状态连接数
-netstat -an |grep TIME_WAIT|wc -l
+netstat -abno |grep TIME_WAIT|wc -l
 # 查看建立稳定连接数量
-netstat -an |grep ESTABLISHED |wc -l
+netstat -abno |grep ESTABLISHED |wc -l
 # 查看进程详情
 tasklist |findstr 36856
 java.exe                     36856 Console                    1    968,636 K

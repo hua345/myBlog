@@ -50,7 +50,7 @@ public class Application {
 
 ## 3. 添加依赖
 
-```java
+```xml
 #maven
 <dependency>
     <groupId>org.springframework.boot</groupId>

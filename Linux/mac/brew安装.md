@@ -18,6 +18,10 @@ sudo git clone git://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git /usr/loc
 sudo ln -s /usr/local/Homebrew/bin/brew /usr/local/bin/brew
 # 同步core库
 sudo git clone git://mirrors.ustc.edu.cn/homebrew-core.git/ /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core
+
+sudo git clone git://mirrors.ustc.edu.cn/homebrew-cask.git/ /usr/local/Homebrew/Library/Taps/homebrew/homebrew-cask
+
+sudo git clone git://mirrors.ustc.edu.cn/homebrew-cask-versions.git/ /usr/local/Homebrew/Library/Taps/homebrew/homebrew-cask-versions
 # 查看版本号
 ~ % brew -v
 Homebrew 2.6.1-86-gced0da1
@@ -41,4 +45,26 @@ user account:
   sudo chown -R $(whoami) /usr/local/Homebrew
 # 设置当前用户权限
 ~ % sudo chown -R $(whoami) /usr/local/Homebrew
+```
+
+## brew使用
+
+```bash
+# search搜索包
+➜  ~ brew search java         
+==> Formulae
+app-engine-java            java11                     jslint4java
+google-java-format         javacc                     libreadline-java
+java ✔                     javarepl                   pdftk-java
+
+# info查看包信息
+➜  ~ brew info java  
+openjdk: stable 15.0.1 (bottled) [keg-only]
+Development kit for the Java programming language
+https://openjdk.java.net/
+/usr/local/Cellar/openjdk/15.0.1 (614 files, 324.9MB)
+  Poured from bottle on 2020-12-14 at 16:15:08
+From: git://mirrors.ustc.edu.cn/homebrew-core.git//Formula/openjdk.rb
+License: Cannot Represent
+
 ```

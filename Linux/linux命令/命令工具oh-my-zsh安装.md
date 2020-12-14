@@ -1,9 +1,9 @@
-# [oh-my-zsh github地址](https://github.com/robbyrussell/oh-my-zsh)
+# [oh-my-zsh github 地址](https://github.com/robbyrussell/oh-my-zsh)
 
 ## 安装准备
 
 - Unix-like operating system (macOS or Linux)
-- Zsh should be installed (v4.3.9 or more recent). 
+- Zsh should be installed (v4.3.9 or more recent).
 - curl or wget should be installed
 - git should be installed
 
@@ -54,6 +54,19 @@ p.p.s. Get stickers, shirts, and coffee mugs at https://shop.planetargon.com/col
 ➜  ~
 ```
 
+## Mac 手动安装
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh
+# Optionally, backup your existing ~/.zshrc file
+cp ~/.zshrc ~/.zshrc.orig
+# Create a new zsh configuration file
+cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
+# Change your default shell
+chsh -s $(which zsh)
+```
+
 ### 配置主题和插件
 
 - [Themes](https://github.com/robbyrussell/oh-my-zsh/wiki/Themes)
@@ -71,5 +84,5 @@ p.p.s. Get stickers, shirts, and coffee mugs at https://shop.planetargon.com/col
 
 ➜  ~ vi .zshrc
 ZSH_THEME="robbyrussell"
-plugins=(git docker kubectl)
+plugins=(git golang node python redis-cli docker docker-compose pip npm)
 ```

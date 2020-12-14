@@ -2,21 +2,12 @@
 
 - [http://maven.apache.org/download.cgi](http://maven.apache.org/download.cgi)
 
-## 安装java
-
-- [http://jdk.java.net/](http://jdk.java.net/)
+### mac配置
 
 ```bash
-sudo apt-get install default-jre
-sudo apt-get install default-jdk
-#通过这个命令看到java安装路径
-sudo update-alternatives --config java
-/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
-#配置环境变量
-export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
-export JRE_HOME=${JAVA_HOME}/jre
-export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib
-export PATH=$JAVA_HOME/bin:$JRE_HOME/bin:$PATH
+brew install maven
+#配置文件路径
+/usr/local/Cellar/maven/3.6.3_1/libexec
 ```
 
 ### 配置maven路径

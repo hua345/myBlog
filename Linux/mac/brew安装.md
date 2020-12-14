@@ -40,5 +40,5 @@ ownership and permissions of /usr/local/Homebrew back to your
 user account:
   sudo chown -R $(whoami) /usr/local/Homebrew
 # 设置当前用户权限
-~ % sudo chown -R $(chenjianhua) /usr/local/Homebrew
+~ % sudo chown -R $(whoami) /usr/local/Homebrew
 ```

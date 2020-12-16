@@ -42,7 +42,7 @@ input {
         # 数据库连接驱动，新版的有cj
         jdbc_driver_class => "com.mysql.cj.jdbc.Driver"
         # 表名需要检查准确
-        jdbc_connection_string => "jdbc:mysql://192.168.137.129:3306/db_example?useUnicode=true&characterEncoding=utf-8&useSSL=false"
+        jdbc_connection_string => "jdbc:mysql://192.168.137.129:3306/db_example?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai"
         jdbc_user => "canal"
         jdbc_password => "Aa123456."
         # 每秒都执行"* * * * * *",每分钟"0 * * * * *",每小时"0 0 * * * *"
@@ -109,7 +109,7 @@ input {
         # 数据库连接驱动，新版的有cj
         jdbc_driver_class => "com.mysql.cj.jdbc.Driver"
         # 表名需要检查准确
-        jdbc_connection_string => "jdbc:mysql://192.168.137.129:3306/db_example?useUnicode=true&characterEncoding=utf-8&useSSL=false"
+        jdbc_connection_string => "jdbc:mysql://192.168.137.129:3306/db_example?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai"
         jdbc_user => "canal"
         jdbc_password => "Aa123456."
         # 每分钟都执行"* * * * *",每小时"0 * * * *",每天"0 0 * * *"
@@ -118,6 +118,8 @@ input {
         # 时区设置为上海
         jdbc_default_timezone => "Asia/Shanghai"
         statement => "select bookId as id , bookName, bookDate bookDate from book WHERE bookId > :sql_last_value  ORDER BY bookId ASC"
+        #是否清除 last_run_metadata_path 的记录,如果为真那么每次都相当于从头开始查询所有的数据库记录
+        clean_run => false
         # 默认为false,如果为true,tracking_column追踪字段会被设置到`:sql_last_value`
         use_column_value => true
         #默认true
@@ -190,8 +192,8 @@ input {
         jdbc_driver_library => "/home/elasticsearch/logstash-7.8.1/mysql-connector-java-8.0.21.jar"
         # 数据库连接驱动，新版的有cj
         jdbc_driver_class => "com.mysql.cj.jdbc.Driver"
-        # 表名需要检查准确
-        jdbc_connection_string => "jdbc:mysql://192.168.137.129:3306/db_example?useUnicode=true&characterEncoding=utf-8&useSSL=false"
+        # 表名需要检查准确,时区只对保存mysql数据有用
+        jdbc_connection_string => "jdbc:mysql://192.168.137.129:3306/db_example?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai"
         jdbc_user => "canal"
         jdbc_password => "Aa123456."
         # 每分钟都执行"* * * * *",每小时"0 * * * *",每天"0 0 * * *"
@@ -203,6 +205,8 @@ input {
         # 默认false,是否开启分页查询
         jdbc_paging_enabled => true
         statement => "select bookId as id , bookName, bookDate from book where bookDate > :sql_last_value AND bookDate < NOW() ORDER BY bookDate desc"
+        #是否清除 last_run_metadata_path 的记录,如果为真那么每次都相当于从头开始查询所有的数据库记录
+        clean_run => false
         # 默认为false,如果为true,tracking_column追踪字段会被设置到`:sql_last_value`
         use_column_value => true
         #默认true

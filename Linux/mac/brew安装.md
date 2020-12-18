@@ -13,7 +13,7 @@
 
 ```bash
 # 同步brew.git库
-sudo git clone git://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git /usr/local/Homebrew
+sudo git clone http://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git /usr/local/Homebrew
 # 软连接
 sudo ln -s /usr/local/Homebrew/bin/brew /usr/local/bin/brew
 # 同步core库

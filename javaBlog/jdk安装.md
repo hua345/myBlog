@@ -83,7 +83,7 @@ adoptopenjdk13-jre                       adoptopenjdk8-openj9-large
 adoptopenjdk13-openj9                    adoptopenjdk9
 adoptopenjdk13-openj9-jre
 # 下载Java8
-brew cask install adoptopenjdk8
+brew install --cask adoptopenjdk8
 
 sudo ln -sfn /usr/local/opt/openjdk@8/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-8.jdk
 ```

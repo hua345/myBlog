@@ -17,16 +17,16 @@
 
 选择`Add Configuration -> Tomcat Server -> Local`添加配置
 
-![idea_tomcat01](./img/idea/idea_tomcat01.png)
+![idea_tomcat01](./img/idea_tomcat01.png)
 
 选择`Server -> Configure`配置tomcat路径
 
-![idea_tomcat02](./img/idea/idea_tomcat02.png)
+![idea_tomcat02](./img/idea_tomcat02.png)
 
 选择`Deployment -> + 对应项目的exploded`,访问路径是`/springmvcDemo_war_exploded`
 
-![idea_tomcat05](./img/idea/idea_tomcat05.png)
+![idea_tomcat05](./img/idea_tomcat05.png)
 
 启动项目
 
-![idea_tomcat03](./img/idea/idea_tomcat04.png)
+![idea_tomcat03](./img/idea_tomcat04.png)

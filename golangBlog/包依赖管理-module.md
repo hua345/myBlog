@@ -29,6 +29,10 @@ go: modules disabled inside GOPATH/src by GO111MODULE=auto; see 'go help modules
 我们将项目移出`GOPATH`，然后:
 
 ```bash
+go env -w GO111MODULE=auto
+```
+
+```bash
 $ go mod init
 go: creating new go.mod: module github.com/hua345/generateCode
 ```

@@ -57,7 +57,79 @@ explain update vm_channel set obtained_status=1 where id in ('28dde0bb-a7de-4058
 Extra 列主要用于显示额外的信息，常见信息及其含义如下：
 
 - `Using where` ：MySQL 服务器会在存储引擎检索行后再进行过滤
-- `Using filesort`：通常出现在 GROUP BY 或 ORDER BY 语句中，且排序或分组没有基于索引，此时需要使用文件在内存中进行排序，因为使用索引排序的性能好于使用文件排序，所以出现这种情况可以考虑通过添加索引进行优化
 - `Using index`：使用了覆盖索引进行查询，此时不需要访问表，从索引中就可以获取到所需的全部数据
 - `Using index condition`：查找使用了索引，但是需要回表查询数据
-- `Using temporary`：表示需要使用临时表来处理查询，常出现在 GROUP BY 或 ORDER BY 语句中
+- `Using index for skip scan`：在MySQL 8.0也实现了索引跳跃扫描，在优化器选项也可以看到`skip_scan=on`
+
+### `Using filesort`
+
+通常出现在 `GROUP BY` 或 `ORDER BY` 语句中，且排序或分组没有基于索引，此时需要使用文件在内存中进行排序，因为使用索引排序的性能好于使用文件排序，所以出现这种情况可以考虑通过添加索引进行优化
+
+`filesort`可以使用的内存空间大小为参数`sort_buffer_size`的值，默认为2M,当排序记录太多`sort_buffer_size`不够用时，mysql会使用临时文件来存放各个分块，然后各个分块排序后再多次合并分块最终全局完成排序。
+
+```sql
+mysql> show global variables like 'sort_buffer_size';
++------------------+--------+
+| Variable_name    | Value  |
++------------------+--------+
+| sort_buffer_size | 262144 |
++------------------+--------+
+1 row in set (0.01 sec)
+mysql> show global status like '%sort%';
++-------------------+-------+
+| Variable_name     | Value |
++-------------------+-------+
+| Sort_merge_passes | 0     |
+| Sort_range        | 0     |
+| Sort_rows         | 155   |
+| Sort_scan         | 33    |
++-------------------+-------+
+4 rows in set (0.00 sec)
+```
+
+`Sort_merge_passes`表示`filesort`执行过的文件分块合并次数的总和，如果该值比较大，建议增大`sort_buffer_size`的值
+
+### `Using temporary`
+
+表示由于排序没有走索引，因此创建了一个内部临时表。常出现在 `GROUP BY` 或 `ORDER BY` 语句中
+
+```sql
+mysql> show global status like '%tmp%';
++-------------------------+-------+
+| Variable_name           | Value |
++-------------------------+-------+
+| Created_tmp_disk_tables | 0     |
+| Created_tmp_files       | 4     |
+| Created_tmp_tables      | 59    |
++-------------------------+-------+
+3 rows in set (0.00 sec)
+```
+
+当mysql需要创建临时表时，选择内存临时表还是硬盘临时表取决于参数`tmp_table_size`和`max_heap_table_size`
+
+用户可以在mysql的配置文件里修改该两个参数的值，两者的默认值均为16M。
+
+```conf
+tmp_table_size = 16M
+max_heap_table_size = 16M
+```
+
+```sql
+mysql> show global variables like '%_table_size';
++---------------------+----------+
+| Variable_name       | Value    |
++---------------------+----------+
+| max_heap_table_size | 16777216 |
+| tmp_table_size      | 16777216 |
++---------------------+----------+
+2 rows in set (0.00 sec)
+```
+
+## 查询优化器
+
+```sql
+mysql> select @@optimizer_switch \G;
+*************************** 1. row ***************************
+@@optimizer_switch: index_merge=on,index_merge_union=on,index_merge_sort_union=on,index_merge_intersection=on,engine_condition_pushdown=on,index_condition_pushdown=on,mrr=on,mrr_cost_based=on,block_nested_loop=on,batched_key_access=off,materialization=on,semijoin=on,loosescan=on,firstmatch=on,duplicateweedout=on,subquery_materialization_cost_based=on,use_index_extensions=on,condition_fanout_filter=on,derived_merge=on,use_invisible_indexes=off,skip_scan=on,hash_join=on,subquery_to_derived=off,prefer_ordering_index=on,hypergraph_optimizer=off,derived_condition_pushdown=on
+1 row in set (0.00 sec
+```

@@ -6,10 +6,10 @@
 ## 1. 安装 kafka
 
 ```bash
-wget https://mirrors.tuna.tsinghua.edu.cn/apache/kafka/2.5.0/kafka_2.12-2.5.0.tgz
+wget https://mirrors.tuna.tsinghua.edu.cn/apache/kafka/2.7.0/kafka_2.12-2.7.0.tgz
 
-tar -xzf kafka_2.12-2.5.0.tgz
-mv kafka_2.12-2.5.0 /usr/local/kafka
+tar -xzf kafka_2.12-2.7.0.tgz
+mv kafka_2.12-2.7.0 /usr/local/kafka
 
 vi /etc/profile
 export KAFKA_HOME=/usr/local/kafka
@@ -36,7 +36,6 @@ vi $KAFKA_HOME/config/server.properties
 ```
 
 ```conf
-
 ############################# Socket Server Settings #############################
 
 # The address the socket server listens on. It will get the value returned from

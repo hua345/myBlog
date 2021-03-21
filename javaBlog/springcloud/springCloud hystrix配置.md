@@ -4,6 +4,8 @@
 - [https://github.com/Netflix/Hystrix/wiki/Configuration](https://github.com/Netflix/Hystrix/wiki/Configuration)
 
 ```conf
+# 开启断路器
+spring.cloud.circuit.breaker.enabled=true
 # 在feign中开启hystrix功能，默认情况下feign不开启hystrix功能
 feign.hystrix.enabled=true
 # 命令执行(execution)配置

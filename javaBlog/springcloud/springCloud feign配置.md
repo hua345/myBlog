@@ -27,6 +27,8 @@ ribbon.MaxAutoRetries=0
 # 对切换实例的重试次数，默认1(默认会看到超时时间是ribbon.ReadTimeout * ribbon.MaxAutoRetriesNextServer的结果时间)
 ribbon.MaxAutoRetriesNextServer=1
 
+# 开启断路器
+spring.cloud.circuit.breaker.enabled=true
 # 在feign中开启hystrix功能，默认情况下feign不开启hystrix功能
 feign.hystrix.enabled=true
 # 命令执行(execution)配置

@@ -1,19 +1,5 @@
 # mermaid 流程图
 
-```sql
-vm_time                      datetime        null comment '机器时间 日清日期',
-sale_num                     int             null comment '销售数量',
-replenish_num                int             null comment '补货数量',
-inventory_loss_num           int             null comment '盘亏数量',
-inventory_profit_num         int             null comment '盘盈数量',
-retreat_num                  int             null comment '机器退货数量',
-borrow_out_num               int             null comment '机器借走数量',
-borrow_return_num            int             null comment '机器还回数量',
-trade_total_num              int             null comment '总计',
-
-#总数 = 补货数量 - 销售数量(领料数量) - 机器退货数量 + 盘亏数量(负数) + 盘盈数量 + 机器还回数量(还料数量)
-```
-
 ```mermaid
 sequenceDiagram
     participant 总仓

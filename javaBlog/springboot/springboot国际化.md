@@ -26,6 +26,13 @@ public class Internationalization implements  WebMvcConfigurer {
 
 在这段配置中，我们首先提供了一个 `SessionLocaleResolver` 实例，这个实例会替换掉默认的 `AcceptHeaderLocaleResolver`，不同于 `AcceptHeaderLocaleResolver` 通过请求头来判断当前的环境信息，`SessionLocaleResolver` 将客户端的 `Locale` 保存到 `HttpSession`对象中，并且可以进行修改
 
+添加配置,springboot会自动获取到国际化信息
+
+```conf
+spring.messages.basename=i18n/messages
+spring.messages.encoding=utf-8
+```
+
 ```java
 public class I18nMessageUtil {
 

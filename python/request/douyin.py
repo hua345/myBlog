@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import requests
 import json
 import re
@@ -130,7 +131,7 @@ if __name__ == '__main__':
     # 分享链接,视频
     #shareUrl = "https://v.douyin.com/JmenG65/"
     # 用户分享
-    shareUrl = "https://v.douyin.com/JmRvpUD/"
-    baseDir = "C:\\Users\\Administrator\\Desktop\\douyin"
+    shareUrl = "https://v.douyin.com/ejqganr/"
+    baseDir = "/Users/chenjianhua/Desktop/douyin"
     douyin = DouYin()
     douyin.shareViedo(shareUrl, baseDir)

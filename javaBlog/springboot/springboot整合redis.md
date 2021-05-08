@@ -11,9 +11,9 @@ PONG
 
 #### 2. Lettuce
 
-> Lettuce和Jedis的都是连接Redis Server的客户端程序。
-Jedis在实现上是直连redis server，多线程环境下非线程安全，除非使用连接池，
-为每个Jedis实例增加物理连接。Lettuce基于Netty的连接实例（StatefulRedisConnection），
+> `Lettuce`和`Jedis`的都是连接Redis Server的客户端程序。
+`Jedis`在实现上是直连`redis server`，多线程环境下非线程安全，除非使用连接池，
+为每个Jedis实例增加物理连接。`Lettuce基于Netty的连接实例`（StatefulRedisConnection），
 可以在多个线程间并发访问，且线程安全，满足多线程环境下的并发访问，
 同时它是可伸缩的设计，一个连接实例不够的情况也可以按需增加连接实例。
 
@@ -57,9 +57,9 @@ spring.redis.jedis.pool.min-idle=0
 
 #### 5. 自定义Template
 
-默认情况下的模板只能支持RedisTemplate<String, String>，也就是只能存入字符串，
+默认情况下的模板只能支持`RedisTemplate<String, String>`，也就是只能存入字符串，
 这在开发中是不友好的，所以自定义模板是很有必要的，
-当自定义了模板又想使用String存储这时候就可以使用StringRedisTemplate的方式，它们并不冲突
+当自定义了模板又想使用String存储这时候就可以使用`StringRedisTemplate`的方式，它们并不冲突
 
 ```java
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

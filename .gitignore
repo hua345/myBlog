@@ -8,7 +8,6 @@
 *.dll
 *.so
 *.dylib
-*.xlsx
 *.xls
 **/__pycache__/
 *.pyc

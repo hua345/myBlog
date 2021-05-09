@@ -1,4 +1,6 @@
 import pandas
+from string import Template
+
 jsonFile = "data.json"
 
 df = pandas.read_json(jsonFile)
@@ -9,5 +11,9 @@ print(dictData)
 for row in df.itertuples():
     print(row.bookName)
 
+hellpTemplate = Template('hello $name $world')
+
 for rowDict in dictData:
-    print(rowDict)
+    resultStr = hellpTemplate.safe_substitute(name=rowDict["bookName"])
+    print(resultStr)
+

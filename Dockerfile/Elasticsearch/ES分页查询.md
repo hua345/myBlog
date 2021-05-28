@@ -1,9 +1,14 @@
-# Elasticsearch 分页查询记录超过 10000 的问题
+# ES分页查询
+
+## 参考
 
 - [https://www.elastic.co/guide/en/elasticsearch/guide/current/pagination.html](https://www.elastic.co/guide/en/elasticsearch/guide/current/pagination.html)
 - [解决ElasticSearch深度分页机制中Result window is too large问题](https://blog.csdn.net/lisongjia123/article/details/79041402)
 
-## 分布式系统中的深度分页
+## 1. From + size 分页查询
+
+
+## 1.1 分布式系统中的深度分页
 
 > 为了理解为什么深度分页会带来问题，让我们想象一下，我们在具有五个主分片的单个索引中进行搜索。当我们请求结果的第一页（结果1至10）时，每个分片都会产生自己的前10个结果，并将它们返回给协调节点，然后该节点对所有50个结果进行排序，以选择总的前10个结果。
 
@@ -55,3 +60,4 @@ PUT /book_index/_settings
 }
 ```
 
+不再建议使用`scroll API`进行深度分页。如果要分页检索超过 `Top 10,000+` 结果时，推荐使用：`PIT+search_after`

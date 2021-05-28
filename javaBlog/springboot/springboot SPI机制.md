@@ -98,6 +98,23 @@ public class Driver extends NonRegisteringDriver implements java.sql.Driver {
 在springboot的自动装配过程中，最终会加载`META-INF/spring.factories`文件，而加载的过程是由`SpringFactoriesLoader`加载的。从CLASSPATH下的每个Jar包中搜寻所有`META-INF/spring.factories`配置文件，然后将解析`properties`文件，找到指定名称的配置后返回
 
 ```java
+@Test
+public void testSpringBootSpi() {
+    ClassLoader classLoader = SpringApplication.class.getClassLoader();
+    Set<String> names = new LinkedHashSet(SpringFactoriesLoader.loadFactoryNames(ApplicationContextInitializer.class, classLoader));
+    names.forEach(item -> log.info(item));
+}
+
+org.springframework.boot.context.ConfigurationWarningsApplicationContextInitializer
+org.springframework.boot.context.ContextIdApplicationContextInitializer
+org.springframework.boot.context.config.DelegatingApplicationContextInitializer
+org.springframework.boot.rsocket.context.RSocketPortInfoApplicationContextInitializer
+org.springframework.boot.web.context.ServerPortInfoApplicationContextInitializer
+org.springframework.boot.autoconfigure.SharedMetadataReaderFactoryContextInitializer
+org.springframework.boot.autoconfigure.logging.ConditionEvaluationReportLoggingListener
+```
+
+```java
 public final class SpringFactoriesLoader {
     public static final String FACTORIES_RESOURCE_LOCATION = "META-INF/spring.factories";
 

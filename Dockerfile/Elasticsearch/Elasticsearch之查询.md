@@ -222,3 +222,45 @@ GET /book_index/_search
   }
 }
 ```
+
+## 查询示例
+
+```json
+{
+  "from": 0,
+  "size": 10,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "bookName": {
+              "value": "elasticSearch"
+            }
+          }
+        },
+        {
+          "range": {
+            "create_at": {
+              "gte": "2021-05-18T00:00:00+08:00",
+              "lte": "2021-05-19T00:00:00+08:00"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "_source": [
+    "id",
+    "bookName",
+    "create_at"
+  ],
+  "sort": [
+    {
+      "id": {
+        "order": "desc"
+      }
+    }
+  ]
+}
+```

@@ -30,6 +30,9 @@ Options are:
 ```bash
 ab [options] [http[s]://]hostname[:port]/path
 ➜  ~ ab -c 1000 -n 100000  http://localhost:8080/
+
+# post 并发测试
+ab -n 10 -c 10 -p test.json -T application/json http://localhost:8080/xxx
 ```
 
 #### 3.1 查看最大允许打开的文件数量

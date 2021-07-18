@@ -23,6 +23,24 @@ export PATH=$KAFKA_HOME/bin:$PATH
 source ~/.zshrc
 ```
 
+设置javaHome
+
+```bash
+echo $JAVA_HOME
+#我们查看时发现mac并没有帮我们设置JAVA_HOME
+ls -l /usr/libexec/java_home
+lrwxr-xr-x  1 root  wheel  79 12 18 14:18 /usr/libexec/java_home -> /System/Library/Frameworks/JavaVM.framework/Versions/Current/Commands/java_home
+
+# 编辑配置文件
+vi ~/.zshrc
+export JAVA_HOME=$(/usr/libexec/java_home)
+export PATH=$JAVA_HOME/bin:$PATH
+export CLASS_PATH=$JAVA_HOME/lib
+source .bash_profile
+echo $JAVA_HOME
+/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home
+```
+
 ```bash
 # 查看环境变量
 ➜  ~ echo $PATH         

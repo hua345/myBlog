@@ -141,6 +141,11 @@
     <conversionRule conversionWord="classColor" converterClass="ch.qos.logback.core.pattern.color.CyanCompositeConverter"/>
     <conversionRule conversionWord="lineColor" converterClass="ch.qos.logback.core.pattern.color.MagentaCompositeConverter"/>
 
+    <!--控制台 ,只有tail命令才能显示颜色-->
+    <Console name="CONSOLE" target="SYSTEM_OUT">
+        <PatternLayout
+            pattern="%highlight{[%X{traceId}][%d] [%p] (%F.%M:%L.%t) - %m%n}{FATAL=red, ERROR=red, WARN=yellow, INFO=white, DEBUG=green, TRACE=blue}"/>
+    </Console>
     <!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径-->
     <property name="LOG_HOME" value="./logs"/>
 

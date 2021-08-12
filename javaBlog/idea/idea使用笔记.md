@@ -11,9 +11,9 @@
 | Rainbow Brackets               | 彩虹括号                                |
 | MybatisX                       | mybatis XML 和 java 方法之间快速跳转    |
 | Material Theme UI              | 扁平化风格界面                          |
-| CodeGlance                     | 代码编辑区迷你缩放图                    |
 | Markdown Navigator             | Markdown 文档                           |
 | Protobuf Support               | Protobuf 支持                           |
+| Mybatis-log-plugin             | Mybatis 日志参数格式化                  |
 
 #### 2.idea 配置
 

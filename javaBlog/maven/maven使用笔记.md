@@ -2,7 +2,7 @@
 
 - [http://maven.apache.org/download.cgi](http://maven.apache.org/download.cgi)
 
-### mac配置
+## mac配置
 
 ```bash
 brew install maven
@@ -10,7 +10,7 @@ brew install maven
 /usr/local/Cellar/maven/3.6.3_1/libexec
 ```
 
-### 配置maven路径
+## 配置maven路径
 
 ```bash
 vim /etc/profile

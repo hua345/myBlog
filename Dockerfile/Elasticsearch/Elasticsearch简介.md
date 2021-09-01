@@ -59,7 +59,7 @@ ES 集群其实是一个分布式系统，要满足高可用性，高可用就�
 
 ![index_term01](./img/index_term01.jpg)
 
-在 lucene 中为了查询 name=XXX 的这样一个条件，会建立基于 name 的倒排链。以上面的数据为例，倒排链如下：
+在 `lucene` 中为了查询 name=XXX 的这样一个条件，会建立基于 name 的倒排链。以上面的数据为例，倒排链如下：
 姓名
 
 | 分词 Term | 倒排链  |

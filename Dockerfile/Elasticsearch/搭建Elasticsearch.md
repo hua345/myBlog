@@ -1,6 +1,7 @@
 # [ElasticSeearch](https://www.elastic.co/cn/products/elasticsearch)
 
 - [https://www.elastic.co/cn/products/elasticsearch](https://www.elastic.co/cn/products/elasticsearch)
+- [Get Started with Elasticsearch](https://www.elastic.co/cn/start)
 - [https://github.com/elastic/elasticsearch](https://github.com/elastic/elasticsearch)
 
 ## 简介

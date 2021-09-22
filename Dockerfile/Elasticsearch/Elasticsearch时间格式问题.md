@@ -1,13 +1,13 @@
 # 时间格式问题
 
-在 es 内部，`date`被转为 UTC，并被存储为时间戳，代表从`1970年1月1号0点`到现在的毫秒数
+在 es 内部，`date`被转为 `UTC`，并被存储为时间戳，代表从`1970年1月1号0点`到现在的毫秒数
 
 `date`格式可以在 put mapping 的时候用 `format` 参数指定，如果不指定的话，则启用默认格式，是`strict_date_optional_time||epoch_millis`。
 
 ```json
 "create_at": {
-"type": "date",
-"format": "strict_date_optional_time||epoch_millis"
+  "type": "date",
+  "format": "strict_date_optional_time||epoch_millis"
 }
 ```
 
@@ -20,6 +20,18 @@
 ## CST 中国标准时间
 
 China Standard Time，是中国的标准时间。CST = GMT(UTC) + 8。
+
+**从_source获取存储的文档, 不做任何处理,原样返回**
+
+```java
+# 查询
+GET my_date/_search
+{ 
+  "query": {
+    "match_all": {}
+  }
+}
+```
 
 ## logstash 同步
 

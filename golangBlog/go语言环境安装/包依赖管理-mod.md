@@ -29,7 +29,7 @@ go: modules disabled inside GOPATH/src by GO111MODULE=auto; see 'go help modules
 我们将项目移出`GOPATH`，然后:
 
 ```bash
-go env -w GO111MODULE=auto
+go env -w GO111MODULE=on
 ```
 
 ```bash

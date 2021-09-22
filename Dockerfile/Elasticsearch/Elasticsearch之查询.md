@@ -1,3 +1,5 @@
+[TOC]
+
 # 1.[查询数据](https://www.elastic.co/guide/en/elasticsearch/reference/7.8/search-search.html#search-search-api-example)
 
 - [Query DSL](https://www.elastic.co/guide/en/elasticsearch/reference/7.8/query-dsl.html)
@@ -154,7 +156,13 @@ GET /book_index/_search
 }
 ```
 
-## `range`范围查询
+## 1.5 `range`范围查询
+
+- `from`范围开始
+- `include_lower`是否包含范围的左边界，默认是true
+- `include_upper`是否包含范围的右边界，默认是true
+- `time_zone`时区
+- `format`时间格式
 
 ```json
 GET /book_index/_search
@@ -171,7 +179,41 @@ GET /book_index/_search
 }
 ```
 
-## `ids`主键查询
+## 1.6 `prefix`前缀模糊查询
+
+匹配`bookName`以`玉`为前缀的文档
+
+```
+GET book_index/_search
+{
+  "query": {
+    "prefix": {
+      "bookName": "玉"
+    }
+  }
+}
+```
+
+## 1.7 `wildcard`通配符查询
+
+wildcard 查询：允许你使用通配符 `*` 和 `?` 来进行查询
+
+- `*`代表一个或多个字符
+- `?`仅代表一个字符
+- 注意：这个查询功能影响性能
+
+```
+GET book_index/_search
+{
+  "query": {
+    "wildcard": {
+      "bookName": "玉*"
+    }
+  }
+}
+```
+
+## 1.8 `ids`主键查询
 
 对 index`_id`查询
 
@@ -189,7 +231,7 @@ GET /book_index/_search
 }
 ```
 
-## 1.7 [`bool` 查询](https://www.elastic.co/guide/en/elasticsearch/reference/7.8/query-dsl-bool-query.html#query-dsl-bool-query)
+## 1.9 [Boolean query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html#query-dsl-bool-query)
 
 `bool query`可以组合任意多个简单查询，各个简单查询之间的逻辑表示如下：
 

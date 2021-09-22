@@ -1,3 +1,6 @@
+- [Golang Downloads Mirrors - The Go Programming Language (gomirrors.org)](https://gomirrors.org/)
+- [Downloads - The Go Programming Language (google.cn)](https://golang.google.cn/dl/)
+
 # golang相关文档
 
 - [the-way-to-go](https://github.com/unknwon/the-way-to-go_ZH_CN/blob/master/eBook/directory.md) Go入门指南

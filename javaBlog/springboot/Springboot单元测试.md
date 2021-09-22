@@ -5,8 +5,17 @@
 - [Testing the Web Layer](https://spring.io/guides/gs/testing-web/)
 - [Mockito framework site](https://site.mockito.org/)
 - [https://github.com/spring-guides/gs-testing-web](https://github.com/spring-guides/gs-testing-web)
+- [Spring Boot 集成 JUnit5，更优雅单元测试](https://mp.weixin.qq.com/s/Jeb1dUuRyGjrWIzlJ6DDtg)
 
 `Spring Boot 2.2.0` 版本开始引入 `Junit5` 作为单元测试默认库
+
+引入如下依赖，防止使用旧的`junit4`相关接口我们将其依赖排除。
+
+Junit5是由`JUnit Platform`、`JUnit JUpiter`、`JUnit Vintage`组成
+
+- `JUnit Platform`：这是Junit提供的平台功能模块，通过它，其它的测试引擎都可以接入Junit实现接口和执行。
+- `JUnit JUpiter`：这是JUnit5的核心，是一个基于JUnit Platform的引擎实现，它包含许多丰富的新特性来使得自动化测试更加方便和强大。
+- `JUnit Vintage`：这个模块是兼容JUnit3、JUnit4版本的测试引擎，使得旧版本的自动化测试也可以在JUnit5下正常运行。
 
 ## 1. 添加依赖
 
@@ -24,8 +33,6 @@
 </dependency>
 ```
 
-
-
 ## 2.创建测试用例
 
 ## 2.1 创建简单测试用例
@@ -34,7 +41,8 @@
 - `@DisplayName`设置测试用例显示名称
 - `@BeforeAll`,`@AfterAll`测试类执行前/后运行的方法,需要`public static`,替代`junit4`中`@BeforeClass,@AfterClass`
 - `@BeforeEach`,`@AfterEach`在每个测试用例前/后执行,替代`junit4`中`@Before,@After`
-- `@RepeatedTest(5)`设置单元测试执行次数
+- `@RepeatedTest(n)`设置单元测试执行次数
+- `@ParameterizedTest`参数化测试，同时也需要`@ValueSource`提供一组数据，它支持八种基本类型以及`String`和自定义对象类型
 
 ```java
 import lombok.extern.slf4j.Slf4j;

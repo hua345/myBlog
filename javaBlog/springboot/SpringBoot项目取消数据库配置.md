@@ -1,3 +1,5 @@
+[Spring Boot Disabling Specific Auto-configuration Classes](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#using.auto-configuration.disabling-specific)
+
 # SpringBoot项目取消数据库配置
 
 ## 错误

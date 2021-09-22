@@ -1,3 +1,5 @@
+[TOC]
+
 # elasticsearch 控制台
 
 - [https://www.elastic.co/guide/en/elasticsearch/reference/7.8/rest-apis.html](https://www.elastic.co/guide/en/elasticsearch/reference/7.8/rest-apis.html)

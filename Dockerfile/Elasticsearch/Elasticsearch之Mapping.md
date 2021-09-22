@@ -1,3 +1,9 @@
+[TOC]
+
+## 参考
+
+- [Mapping parameters](https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-params.html)
+
 # mapping
 
 ## 1.字段类型
@@ -233,3 +239,4 @@ GET my-index-000002/_mapping
   }
 }
 ```
+

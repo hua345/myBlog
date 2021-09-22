@@ -1,3 +1,5 @@
+[TOC]
+
 # ES聚合查询
 
 ```json
@@ -196,3 +198,15 @@ GET employee/_search
   }
 }
 ```
+
+## [文本类型默认不进行聚合](https://www.elastic.co/guide/en/elasticsearch/reference/current/text.html#fielddata-mapping-param)
+
+`text`默认情况下，字段是可搜索的，但默认情况下，无法进行聚合、排序或脚本编写。如果您尝试从字段上的脚本中对值进行排序、聚合或访问,会有下面提示:
+
+默认情况下，文本字段上的字段数据是禁用的。`fielddata=true`启用以通过反转倒置索引在内存中加载字段数据。
+
+```
+Text fields are not optimised for operations that require per-document field data like aggregations and sorting, so these operations are disabled by default. Please use a keyword field instead. Alternatively, set fielddata=true on [xxx] in order to load field data by uninverting the inverted index. Note that this can use significant memory.
+
+```
+

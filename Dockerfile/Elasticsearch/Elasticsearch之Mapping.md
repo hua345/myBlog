@@ -15,15 +15,58 @@
 
 在 ES 7.x 有两种字符串类型：`text`和`keyword`
 
-`text` 类型适用于需要被全文检索的字段，例如新闻正文、邮件内容等比较长的文字，`text` 类型会被 `Lucene` 分词器`Analyzer`处理为一个个词项，并使用 `Lucene` 倒排索引存储，`text` 字段不能被用于排序
+> `text` fields are best suited for unstructured but human-readable content. If you need to index unstructured machine-generated content, see [Mapping unstructured content](https://www.elastic.co/guide/en/elasticsearch/reference/current/keyword.html#mapping-unstructured-content).
+>
+> If you need to index structured content such as email addresses, hostnames, status codes, or tags, it is likely that you should rather use a [`keyword`](https://www.elastic.co/guide/en/elasticsearch/reference/current/keyword.html) field.
+>
+> `text` fields are searchable by default, but by default are not available for aggregations, sorting, or scripting.  If you try to sort, aggregate, or access values from a script on a `text` field, you will see this exception:
+>
+> Fielddata is disabled on text fields by default. Set `fielddata=true` on `your_field_name` in order to load fielddata in memory by uninverting the inverted index. Note that this can however use significant memory.
+>
+> `text` 类型适用于非结构化人类可读的内容，如果是机器生成的非结构化内容可以看[Mapping unstructured content](https://www.elastic.co/guide/en/elasticsearch/reference/current/keyword.html#mapping-unstructured-content).
+>
+> `keyword` 适合简短、结构化字符串，例如姓名、商品名称等，可以用于过滤、排序、聚合检索，也可以用于精确查询。
+>
+> `text` 类型字段默认是可以搜索的,`text` 类型会被 `Lucene` 分词器`Analyzer`处理为一个个词项，并使用 `Lucene` 倒排索引存储。但是不能被用于聚合、排序和脚本。如果尝试聚合、排序和脚本一个`text`类型字段，会有下面的异常:
+>
+> `text`类型是默认禁止`Fielddata `，设置 `fielddata=true`可以取消倒排索引加载字段数据到内存中。(请注意，这可能会占用大量内存)
 
-`keyword` 适合简短、结构化字符串，例如姓名、商品名称等，可以用于过滤、排序、聚合检索，也可以用于精确查询。
+> ### [Before enabling fielddata]([Text type family | Elasticsearch Guide [7.15\] | Elastic](https://www.elastic.co/guide/en/elasticsearch/reference/current/text.html#before-enabling-fielddata))
+>
+> It usually doesn’t make sense to enable fielddata on text fields. Field data is stored in the heap with the [field data cache](https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-fielddata.html) because it is expensive to calculate. Calculating the field data can cause latency spikes, and increasing heap usage is a cause of cluster performance issues.
+>
+> Most users who want to do more with text fields use [multi-field mappings](https://www.elastic.co/guide/en/elasticsearch/reference/current/multi-fields.html) by having both a `text` field for full text searches, and an unanalyzed [`keyword`](https://www.elastic.co/guide/en/elasticsearch/reference/current/keyword.html) field for aggregations, as follows:
+>
+> 在`text`字段上启用`fielddata`通常没有意义。字段数据与字段数据缓存一起存储在堆中，因为计算成本很高。计算字段数据可能会导致延迟峰值，而堆使用率的增加是集群性能问题的一个原因。
+> 大多数希望对`text`字段进行更多操作的用户都使用[multi-field mappings](https://www.elastic.co/guide/en/elasticsearch/reference/current/multi-fields.html) ，包括用于全文搜索的文本字段和用于聚合的未分析[`keyword`](https://www.elastic.co/guide/en/elasticsearch/reference/current/keyword.html) 字段，如下所示：
+>
+> ```
+> PUT my-index-000001
+> {
+>   "mappings": {
+>     "properties": {
+>       "my_field": { 
+>         "type": "text",
+>         "fields": {
+>           "keyword": { 
+>             "type": "keyword"
+>           }
+>         }
+>       }
+>     }
+>   }
+> }
+> ```
+>
+> - Use the my_field field for searches.
+>
+> - Use the my_field.keyword field for aggregations, sorting, or in scripts.
 
 ### 1.2[number](https://www.elastic.co/guide/en/elasticsearch/reference/current/number.html)
 
 数字类型分为 `long、integer、short、byte、double、float、half_float、scaled_floa`t。
 
-数字类型的字段在满足需求的前提下应当尽量选择范围较小的数据类型，字段长度越短，搜索效率越高，对于浮点数，可以优先考虑使用 `scaled_float` 类型，该类型可以通过缩放因子来精确浮点数，例如 `12.34` 可以转换为 `1234` 来存储。
+数字类型的字段在满足需求的前提下应当尽量选择范围较小的数据类型，字段长度越短，搜索效率越高，对于浮点数，可以优先考虑使用 `scaled_float` 类型，该类型可以通过缩放因子来精确浮点数，例如输入 `12.34` 可以转换为 `1234` 存储到ES中。
 
 ```json
 PUT my-index-000001
@@ -239,4 +282,6 @@ GET my-index-000002/_mapping
   }
 }
 ```
+
+
 

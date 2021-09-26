@@ -1,5 +1,7 @@
 # 时间格式问题
 
+- [Date field type](https://www.elastic.co/guide/en/elasticsearch/reference/current/date.html)
+
 在 es 内部，`date`被转为 `UTC`，并被存储为时间戳，代表从`1970年1月1号0点`到现在的毫秒数
 
 `date`格式可以在 put mapping 的时候用 `format` 参数指定，如果不指定的话，则启用默认格式，是`strict_date_optional_time||epoch_millis`。

@@ -11,7 +11,7 @@
 `tokenizer`：按照规则进行分词，在英文中按照`空格`分词
 `filter`：将切分的单词进行加工，比如大写转小写，删除 stopwords(停顿词，a、an、the、is 等),增加同义词
 
-ES [内置分词器`analyzer`](https://www.elastic.co/guide/en/elasticsearch/reference/7.9/analysis-analyzers.html)
+ES [内置分词器`analyzer`](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-analyzers.html)
 
 - [`Standard Analyzer`](https://www.elastic.co/guide/en/elasticsearch/reference/7.9/analysis-standard-analyzer.html) - 默认分词器，按词切分，小写处理
 - [`Simple Analyzer`](https://www.elastic.co/guide/en/elasticsearch/reference/7.9/analysis-simple-analyzer.html) - 按照非字母切分（符号被过滤），小写处理
@@ -56,12 +56,14 @@ GET /_analyze
 ## [ik 中文扩展分词器](https://github.com/medcl/elasticsearch-analysis-ik)
 
 ```bash
-wget https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v7.8.1/elasticsearch-analysis-ik-7.8.1.zip
-/home/elasticsearch/elasticsearch-7.8.1/plugins && mkdir ik
-cp ~/elasticsearch-analysis-ik-7.8.1.zip ./
-unzip elasticsearch-analysis-ik-7.8.1.zip
+wget https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v7.14.2/elasticsearch-analysis-ik-7.14.2.zip
+/home/elasticsearch/elasticsearch-7.14.2/plugins && mkdir ik
+cp ~/elasticsearch-analysis-ik-7.14.2.zip ./
+unzip elasticsearch-analysis-ik-7.14.2.zip
 # 重启elasticsearch
 systemctl restart elasticsearch.service
+# 启动日志中会有加载日志
+[INFO ][o.e.p.PluginsService     ] [node-1] loaded plugin [analysis-ik]
 ```
 
 Analyzer: `ik_smart` , `ik_max_word` , Tokenizer: `ik_smart` , `ik_max_word`
@@ -123,3 +125,11 @@ PUT book_index3
   }
 }
 ```
+
+## 安装ik分词的问题
+
+```
+java.security.AccessControlException: access denied ("java.io.FilePermission" "Program%20Files\ES\elasticsearch-7.14.2\plugins\ik\config\IKAnalyzer.cfg.xml" "read")
+```
+
+`Program Files`有空格

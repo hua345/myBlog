@@ -2,10 +2,21 @@
 
 ## 参考
 
+- [Java High Level REST Client ](https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/java-rest-high.html)
+
+- [Building Queries ](https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/java-rest-high-query-builders.html)
+
+- [Building Aggregations](https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/java-rest-high-aggregation-builders.html)
+
 - [Spring Data Elasticsearch](https://spring.io/projects/spring-data-elasticsearch)
+
 - [Spring Data Elasticsearch对应ES版本](https://docs.spring.io/spring-data/elasticsearch/docs/4.2.5/reference/html/#preface.versions)
+
 - [Spring Data Elasticsearch注解](https://docs.spring.io/spring-data/elasticsearch/docs/4.2.5/reference/html/#elasticsearch.mapping.meta-model.annotations)
+
 - [Spring Data Elasticsearch主要类](https://docs.spring.io/spring-data/elasticsearch/docs/4.2.5/reference/html/#elasticsearch.operations)
+
+  
 
 ## 引入依赖
 

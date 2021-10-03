@@ -26,12 +26,7 @@ driver.get(base_url)
 print(driver.title)
 # 生成当前页面快照并保存
 # driver.save_screenshot("baidu.png")
-wait.until(EC.presence_of_element_located((By.ID, 's-top-username')))
-print(driver.find_element_by_xpath(
-    '//a[@id="s-top-username"]/span[last()]').text)
-print(driver.find_element_by_id('s-top-username').text)
-print(driver.find_element_by_id(
-    's-top-username').find_element_by_xpath('./span[last()]').text)
+wait.until(EC.presence_of_element_located((By.ID, 'kw')))
 driver.find_element_by_id("kw").click()
 driver.find_element_by_id("kw").send_keys("taobao")
 driver.find_element_by_id("su").click()

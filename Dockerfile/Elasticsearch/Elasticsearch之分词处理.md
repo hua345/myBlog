@@ -1,3 +1,5 @@
+[TOC]
+
 # [分词处理](https://www.elastic.co/guide/en/elasticsearch/reference/7.9/indices-analyze.html)
 
 > 文本分析就是把全文本转换成一系列单词`term/token`的过程，也叫分词
@@ -125,6 +127,26 @@ PUT book_index3
   }
 }
 ```
+
+## [ES插件管理](https://www.elastic.co/guide/en/elasticsearch/plugins/current/index.html)
+
+```
+# 启动日志中会有加载日志
+[INFO ][o.e.p.PluginsService     ] [node-1] loaded plugin [analysis-ik]
+# 安装插件
+bin/elasticsearch-plugin install [plugin_name]
+# Unix安装/path/to/plugin.zip
+sudo bin/elasticsearch-plugin install file:///path/to/plugin.zip
+# Windows安装C:\path\to\plugin.zip
+bin\elasticsearch-plugin install file:///C:/path/to/plugin.zip
+# analysis-smartcn分词器
+sudo bin/elasticsearch-plugin install analysis-smartcn
+# 查询安装的插件列表
+bin/elasticsearch-plugin list
+ik
+```
+
+
 
 ## 安装ik分词的问题
 

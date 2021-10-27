@@ -121,12 +121,111 @@ PUT book_index3
       },
       "bookDate": {
         "type": "date",
-        "format": "strict_date_optional_time||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+        "format": "strict_date_optional_time||epoch_millis"
       }
     }
   }
 }
 ```
+
+## 自定义分词
+
+### 新增自定义分词`my_word.dic`文件
+
+```
+芳芳
+```
+
+### 编辑`\plugins\ik\config\IKAnalyzer.cfg.xml`文件
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<comment>IK Analyzer 扩展配置</comment>
+	<!--用户可以在这里配置自己的扩展字典 -->
+	<entry key="ext_dict">my_word.dic</entry>
+	 <!--用户可以在这里配置自己的扩展停止词字典-->
+	<entry key="ext_stopwords"></entry>
+	<!--用户可以在这里配置远程扩展字典 -->
+	<!-- <entry key="remote_ext_dict">words_location</entry> -->
+	<!--用户可以在这里配置远程扩展停止词字典-->
+	<!-- <entry key="remote_ext_stopwords">words_location</entry> -->
+</properties>
+```
+
+### 使用自定义分词前
+
+```
+GET /_analyze
+{
+  "tokenizer" : "ik_max_word",
+  "text" : "我爱你芳芳"
+}
+{
+  "tokens" : [
+    {
+      "token" : "我爱你",
+      "start_offset" : 0,
+      "end_offset" : 3,
+      "type" : "CN_WORD",
+      "position" : 0
+    },
+    {
+      "token" : "爱你",
+      "start_offset" : 1,
+      "end_offset" : 3,
+      "type" : "CN_WORD",
+      "position" : 1
+    },
+    {
+      "token" : "芳",
+      "start_offset" : 3,
+      "end_offset" : 4,
+      "type" : "CN_CHAR",
+      "position" : 2
+    },
+    {
+      "token" : "芳",
+      "start_offset" : 4,
+      "end_offset" : 5,
+      "type" : "CN_CHAR",
+      "position" : 3
+    }
+  ]
+}
+
+```
+
+### 使用自定义分词后
+
+```
+GET /_analyze
+{
+  "tokenizer" : "ik_max_word",
+  "text" : "我爱你芳芳"
+}
+{
+  "tokens" : [
+    {
+      "token" : "我爱你",
+      "start_offset" : 0,
+      "end_offset" : 3,
+      "type" : "CN_WORD",
+      "position" : 0
+    },
+    {
+      "token" : "芳芳",
+      "start_offset" : 3,
+      "end_offset" : 5,
+      "type" : "CN_WORD",
+      "position" : 1
+    }
+  ]
+}
+```
+
+
 
 ## [ES插件管理](https://www.elastic.co/guide/en/elasticsearch/plugins/current/index.html)
 

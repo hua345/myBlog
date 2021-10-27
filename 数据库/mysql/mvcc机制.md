@@ -1,4 +1,12 @@
+[TOC]
+
+## 参考
+
+- [MVCC 原理](https://zhuanlan.zhihu.com/p/147372839)
+
 # MVCC多版本并发控制
+
+InnoDB 实现多版本控制 （MVCC）是通过 ReadView+ UndoLog 实现的，UndoLog 保存了历史快照，ReadView 规则帮助判断当前版本的数据是否可见
 
 `MVCC` 全称是**m**ulti**v**ersion **c**oncurrency **c**ontrol，即多版本并发控制，是 innodb 实现事务并发与回滚的重要功能。
 具体的实现是，在数据库的每一行中，添加额外的三个字段：
@@ -6,6 +14,26 @@
 DB_TRX_ID – 记录插入或更新该行的最后一个事务的事务 ID
 DB_ROLL_PTR – 指向改行对应的 undolog 的指针
 DB_ROW_ID – 单调递增的行 ID，他就是 AUTO_INCREMENT 的主键 ID
+
+### **什么是快照读？**
+
+快照读，读取的是**快照数据**，不加锁的简单 Select 都属于快照读.
+
+```text
+SELECT * FROM book WHERE ...
+```
+
+## **什么是当前读？**
+
+当前读就是读的是**最新数据**,而不是历史的数据，加锁的 SELECT，或者对数据进行增删改都会进行当前读。
+
+```text
+SELECT * FROM book LOCK IN SHARE MODE;
+SELECT FROM book FOR UPDATE;
+INSERT INTO book values ...
+DELETE FROM book WHERE ...
+UPDATE book SET ...
+```
 
 
 ## MVCC的实现

@@ -1,7 +1,15 @@
-# es 分布式查询
+# es搜索原理
 
-- [https://www.elastic.co/guide/en/elasticsearch/guide/current/\_query_phase.html](https://www.elastic.co/guide/en/elasticsearch/guide/current/_query_phase.html)
-- [https://www.elastic.co/guide/en/elasticsearch/guide/current/_fetch_phase.html](https://www.elastic.co/guide/en/elasticsearch/guide/current/_fetch_phase.html)
+- [query_phase](https://www.elastic.co/guide/en/elasticsearch/guide/current/_query_phase.html)
+- [fetch_phase](https://www.elastic.co/guide/en/elasticsearch/guide/current/_fetch_phase.html)
+- [Refresh API ](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-refresh.html)
+- [Near real-time search](https://www.elastic.co/guide/en/elasticsearch/reference/current/near-real-time.html)
+
+## 近实时搜索
+
+![](./img/lucene-written-not-committed.png)
+
+![](./img/lucene-in-memory-buffer.png)
 
 ## 查询阶段
 

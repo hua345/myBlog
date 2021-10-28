@@ -1,6 +1,12 @@
 # elasticsearch
 
 - [Lucene 查询原理](https://zhuanlan.zhihu.com/p/35814539)
+- [ES底层原理解析](https://www.cnblogs.com/cangqiongbingchen/p/14139000.html)
+- [Elasticsearch 中为什么选择倒排索引而不选择 B 树索引](https://www.cnblogs.com/lonely-wolf/p/15464556.html#字典树（tria-tree）)
+- [Elasticsearch 如何做到快速检索 - 倒排索引的秘密](https://juejin.cn/post/6889020742366920712)
+- [关于Lucene的词典FST深入剖析](https://www.shenyanchao.cn/blog/2018/12/04/lucene-fst/)
+- [ElasticSearch 2 (9) - 在ElasticSearch之下（图解搜索的故事）](https://www.cnblogs.com/richaaaard/p/5226334.html)
+- [ES索引存储原理](https://blog.csdn.net/guoyuguang0/article/details/76769184)
 
 `ES`是`Elasticsearch`的简称，`Elasticsearch`是一个分布式可扩展的实时搜索和分析引擎，一个建立在全文搜索引擎`Apache Lucene`基础上的搜索引擎。`Lucene`只是一个框架，要充分利用它的功能，需要使用JAVA，并且在程序中集成`Lucene`，学习成本高，且`Lucene`确实非常复杂。
 
@@ -52,28 +58,36 @@ ES 集群其实是一个分布式系统，要满足高可用性，高可用就�
 `Lucene`中最重要的就是它的几种数据结构，这决定了数据是如何被检索的，本文再简单描述一下几种数据结构：
 
 - `Finite State Transducers(有限状态转换器)`：保存`分词term字典`，可以在`FST`上实现单 Term、Term 范围、Term 前缀和通配符查询等。
-- `倒排链`：保存了每个`term`对应的`docId`的列表，采用`skipList`的结构保存，用于`快速跳跃`。
+- `Posting List倒排链`：保存了每个`term`对应的`docId`的列表，采用`skipList`的结构保存，用于`快速跳跃`。
 - `DocValues`：基于`docId`的列式存储，由于列式存储的特点，可以有效提升排序聚合的性能。
 
 为了方便大家理解，我们以人名字，年龄，学号为例，如何实现查某个名字（有重名）的列表。
 
-![index_term01](./img/index_term01.jpg)
+| docId | name  | age  | id   |
+| ----- | ----- | ---- | ---- |
+| 1     | Alice | 18   | 101  |
+| 2     | Alice | 20   | 102  |
+| 3     | Alice | 21   | 103  |
+| 4     | Alan  | 21   | 104  |
+| 5     | Alan  | 18   | 105  |
+
+
 
 在 `lucene` 中为了查询 name=XXX 的这样一个条件，会建立基于 name 的倒排链。以上面的数据为例，倒排链如下：
 姓名
 
-| 分词 Term | 倒排链  |
-| --------- | ------- |
-| Alice     | [1,2,3] |
-| Alan      | [4,5]   |
+| 分词 Term | 倒排链Posting List |
+| --------- | ------------------ |
+| Alice     | [1,2,3]            |
+| Alan      | [4,5]              |
 
 如果我们还希望按照年龄查询，例如想查年龄=18 的列表，我们还可以建立另一个倒排链：
 
-| 分词 Term | 倒排链 |
-| --------- | ------ |
-| 18        | [1,5]  |
-| 20        | [2]    |
-| 21        | [3,4]  |
+| 分词 Term | 倒排链Posting List |
+| --------- | ------------------ |
+| 18        | [1,5]              |
+| 20        | [2]                |
+| 21        | [3,4]              |
 
 如果没有倒排索引`Inverted Index`，想要去找其中的分词，需要遍历整个文档，才能找到对应的文档的 id，这样做效率是十分低的，所以为了提高效率，我们就给输入的所有数据的都建立索引，并且把这样的索引和对应的文档建立一个关联关系，相当于一个词典。当我们在寻找`分词term`的时候就可以直接像查字典一样，直接找到所有包含这个数据的文档的 id，然后找到数据。
 

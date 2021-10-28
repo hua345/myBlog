@@ -58,9 +58,8 @@
 > }
 > ```
 >
-> - Use the my_field field for searches.
->
-> - Use the my_field.keyword field for aggregations, sorting, or in scripts.
+> - 用`my_field`字段进行搜索
+>- 用`my_field.keyword`字段进行聚合、排序和脚本处理
 
 ### 1.2[number](https://www.elastic.co/guide/en/elasticsearch/reference/current/number.html)
 

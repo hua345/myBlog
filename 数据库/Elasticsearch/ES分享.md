@@ -450,7 +450,7 @@ GET jd-product/_search
 {
   "query": {
     "match_phrase": {
-      "productName": "特仑苏 纯牛奶"
+      "productName": "金典 纯牛奶"
     }
   }
 }

@@ -15,29 +15,29 @@
 默认查询`10`条结果
 
 ```json
-GET book_index/_search
+GET jd-product/_search
 {
-    "from":0,
-    "size":100,
-    "query":{
-        "match":{
-            "bookName":"玉米"
-        }
+  "from": 0,
+  "size": 100,
+  "query": {
+    "match": {
+      "productName": "伊利纯牛奶"
     }
+  }
 }
 ```
 
 ### 1.1.2 只返回指定字段(以 match 为例)
 
 ```json
-GET book_index/_search
+GET jd-product/_search
 {
-    "_source":["bookName"],
-    "query":{
-        "match":{
-            "bookName":"玉米"
-        }
+  "_source": ["productName"], 
+  "query": {
+    "match": {
+      "productName": "伊利纯牛奶"
     }
+  }
 }
 ```
 
@@ -48,16 +48,18 @@ GET book_index/_search
 默认是按照`_score`得分排序
 
 ```json
-GET /book_index/_search
+GET jd-product/_search
 {
   "query": {
-    "term": {
-      "bookName": "玉米"
+    "match": {
+      "productName": "伊利纯牛奶"
     }
   },
   "sort": [
     {
-      "bookDate": { "order": "desc" }
+      "_score": {
+        "order": "desc"
+      }
     }
   ]
 }
@@ -95,10 +97,11 @@ GET /book_index/_search
 `match`查询会先对搜索词进行分词，分词完毕后再逐个对分词结果进行匹配
 
 ```json
+GET jd-product/_search
 {
   "query": {
     "match": {
-      "bookName": "玉米"
+      "productName": "伊利牛奶"
     }
   }
 }
@@ -119,10 +122,11 @@ GET /book_index/_search
 `match_phrase` 称为短语搜索，要求所有的分词必须同时出现在文档中，同时位置必须紧邻一致。
 
 ```json
+GET jd-product/_search
 {
   "query": {
-    "match": {
-      "bookName": "玉米"
+    "match_phrase": {
+      "productName": "伊利纯牛奶"
     }
   }
 }
@@ -133,11 +137,11 @@ GET /book_index/_search
 `term`代表完全匹配，也就是精确查询，搜索前不会再对搜索词进行分词，所以我们的`搜索词`必须是`文档分词集合`中的一个
 
 ```json
-GET /book_index/_search
+GET jd-product/_search
 {
   "query": {
     "term": {
-      "bookName": "米"
+      "productName": "牛奶"
     }
   }
 }
@@ -146,11 +150,11 @@ GET /book_index/_search
 `terms`查询某个字段里含有多个关键词的文档
 
 ```json
-GET /book_index/_search
+GET jd-product/_search
 {
   "query": {
     "terms": {
-      "bookName": ["玉","米"]
+      "productName": ["牛奶","伊利"]
     }
   }
 }
@@ -165,13 +169,12 @@ GET /book_index/_search
 - `format`时间格式
 
 ```json
-GET /book_index/_search
+GET jd-product/_search
 {
   "query": {
     "range": {
-      "bookDate": {
-        "gte": "2020-08-01 00:00:00",
-        "lte": "2020-08-30 23:59:59",
+      "syncTime": {
+        "gte": "2021-09-01 00:00:00",
         "format": "yyyy-MM-dd HH:mm:ss"
       }
     }
@@ -184,11 +187,11 @@ GET /book_index/_search
 匹配`bookName`以`玉`为前缀的文档
 
 ```
-GET book_index/_search
+GET jd-product/_search
 {
   "query": {
     "prefix": {
-      "bookName": "玉"
+      "productName": "牛奶"
     }
   }
 }
@@ -203,11 +206,11 @@ wildcard 查询：允许你使用通配符 `*` 和 `?` 来进行查询
 - 注意：这个查询功能影响性能
 
 ```
-GET book_index/_search
+GET jd-product/_search
 {
   "query": {
     "wildcard": {
-      "bookName": "玉*"
+      "productName": "牛奶*"
     }
   }
 }
@@ -218,14 +221,11 @@ GET book_index/_search
 对 index`_id`查询
 
 ```json
-GET /book_index/_search
+GET jd-product/_search
 {
   "query": {
     "ids": {
-      "values": [
-        "1",
-        "2"
-      ]
+      "values": ["2693720"]
     }
   }
 }
@@ -241,6 +241,12 @@ GET /book_index/_search
 | should   | 文档可以匹配 should 选项下的查询条件，也可以不匹配，相当于逻辑运算的 OR                        |
 | must_not | 与 must 相反，匹配该选项下的查询条件的文档不会被返回                                           |
 | filter   | 和 must 一样，匹配 filter 选项下的查询条件的文档才会被返回，但是 filter 不评分，只起到过滤功能 |
+
+> You can use the `minimum_should_match` parameter to specify the number or percentage of `should` clauses returned documents *must* match.
+>
+> `minimum_should_match`参数可以设置至少匹配`should`的数量
+
+
 
 ```json
 {

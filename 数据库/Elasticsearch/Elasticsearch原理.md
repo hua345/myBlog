@@ -36,24 +36,97 @@ select * from product where productName like '%helloworld%'
 | Schema | Mapping       |
 | SQL    | DSL           |
 
-Lucene 中包含了四种基本数据类型，分别是：
+## Lucene 和 ES
 
-`Index`：索引，由很多的 Document 组成。
+`Lucene` 是 `Elasticsearch`所基于的 Java 库，它引入了按段搜索的概念。
+
+`Segment`：也叫段，类似于倒排索引，相当于一个数据集。
+
+`Commit point`：提交点，记录着所有已知的段。
+
+`Lucene index`：**a collection of segments plus a commit point**。由一堆 Segment 的集合加上一个提交点组成。
+
+一个 `Elasticsearch Index` 由一个或者`多个 shard （分片）` 组成
+
+![](D:/Code/myBlog/数据库/Elasticsearch/img/segment.png)
+
+`Lucene` 中包含了四种基本数据类型，分别是：
+
+`Index`：索引，由很多的 `Document` 组成。
 `Document`：由很多的`Field`组成，是`Index`和`Search`的最小单位。
 `Field`：由很多的`分词Term`组成，包括 Field Name 和`Field Value`。
 `分词Term`：由很多的字节组成。一般将 Text 类型的 Field Value 分词之后的每个最小单元叫做`Term`。
 
-## 集群
+**Segment数据集**有着许多数据结构
 
-ES 集群其实是一个分布式系统，要满足高可用性，高可用就是当集群中有节点服务停止响应的时候，整个服务还能正常工作，也就是`服务可用性`；或者说整个集群中有部分节点丢失的情况下，不会有数据丢失，即`数据可用性`。
+### Inverted Index
 
-当用户的请求量越来越高，数据的增长越来越多的时候，系统需要把数据分散到其他节点上，最后来实现`水平扩展`。当集群中有节点出现问题的时候，整个集群的服务也不会受到影响。
+![](./img/Inverted%20Index.png)
 
-一个 ES 集群有三种颜色来表示健康程度：
+`Inverted Index`主要包括两部分：
 
-`Green`：主分片与副本都正常分配
-`Yellow`：主分片全部正常分配，有副本分片未能正常分配
-`Red`：有主分片未能分配（例如，当服务器的磁盘容量超过 85% 时，去创建了一个新的索引）
+1. 一个有序的数据字典`Dictionary`（包括`单词Term`和它出现的`频率`）。
+2. 与单词Term对应的`Postings`（即存在这个单词的文件）。
+
+当我们搜索的时候，首先将搜索的内容分词，然后在字典里找到对应Term，从而查找到与搜索相关的文件内容。
+
+### Stored Field
+
+当我们想要查找包含某个特定标题内容的文件时，`Inverted Index`就不能很好的解决这个问题，所以Lucene提供了另外一种数据结构`Stored Fields`来解决这个问题。本质上，`Stored Fields`是一个简单的键值对`key-value`。默认情况下，ElasticSearch会存储整个文件的JSON source。
+
+![](D:/Code/myBlog/数据库/Elasticsearch/img/storedField.png)
+
+> By default, field values are [indexed](https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-index.html) to make them searchable, but they are not *stored*. This means that the field can be queried, but the original field value cannot be retrieved.
+>
+> 字段默认是被索引可以搜索但是没有`stored`,以为着字段可以被查询，但是原始字段不会返回
+
+Elasticsearch 一些内置的字段默认开启了**store**属性，例如 **_id**、**_source**字段。
+
+当store为默认配置false时，这些field只存储在**_source**中
+
+当store为true时，这些field的value会存储在一个跟**_source**平级的独立的field中。同时也会存储在**_source**中，所以有两份拷贝。
+
+```
+PUT my-index-000001
+{
+  "mappings": {
+    "properties": {
+      "title": {
+        "type": "text",
+        "store": true 
+      },
+      "content": {
+        "type": "text"
+      }
+    }
+  }
+}
+PUT my-index-000001/_doc/1
+{
+  "title":   "Some short title",
+  "content": "A very long content field..."
+}
+
+GET my-index-000001/_search
+{
+  "stored_fields": [ "title", "content"] 
+}
+```
+
+
+
+### Document Values为了排序，聚合
+
+即使这样，我们发现以上结构仍然无法解决诸如：排序、聚合，因为我们可能会要读取大量不需要的信息。
+
+所以，另一种数据结构解决了此种问题：`Document Values`。这种结构本质上就是一个列式的存储，它高度优化了具有相同类型的数据的存储结构。
+
+![](D:/Code/myBlog/数据库/Elasticsearch/img/docValue.png)
+
+为了提高效率，`ElasticSearch`可以将索引下某一个`Document Value`全部读取到内存中进行操作，这大大提升访问速度，但是也同时会消耗掉大量的内存空间。
+
+总之，这些数据结构`Inverted Index`、`Stored Fields`、`Document Values`及其缓存，都在`segment`内部。
+
 
 ## 倒排索引
 
@@ -169,50 +242,7 @@ Bitmap的缺点是存储空间随着文档个数线性增长，`Roaring bitmaps`
 
 如果使用跳表，对**最短的posting list**中的每个id，逐个在另外两个`posting list`中查找看是否存在，最后得到交集的结果。如果使用`bitset`，就很直观了，直接按位与，得到的结果就是最后的交集。
 
-### Lucene 和 ES
-
-`Lucene` 是 `Elasticsearch`所基于的 Java 库，它引入了按段搜索的概念。
-
-`Segment`：也叫段，类似于倒排索引，相当于一个数据集。
-
-`Commit point`：提交点，记录着所有已知的段。
-
-`Lucene index`：“a collection of segments plus a commit point”。由一堆 Segment 的集合加上一个提交点组成。
-
-一个 `Elasticsearch Index` 由一个或者`多个 shard （分片）` 组成
-
-![](D:/Code/myBlog/数据库/Elasticsearch/img/segment.png)
-
-**Segment数据集**有着许多数据结构
-
-#### Inverted Index
-
-Inverted Index主要包括两部分：
-
-1. 一个有序的数据字典Dictionary（包括单词Term和它出现的频率）。
-2. 与单词Term对应的Postings（即存在这个单词的文件）。
-
-当我们搜索的时候，首先将搜索的内容分词，然后在字典里找到对应Term，从而查找到与搜索相关的文件内容。
-
-#### Stored Field
-
-当我们想要查找包含某个特定标题内容的文件时，`Inverted Index`就不能很好的解决这个问题，所以Lucene提供了另外一种数据结构`Stored Fields`来解决这个问题。本质上，`Stored Fields`是一个简单的键值对`key-value`。默认情况下，ElasticSearch会存储整个文件的JSON source。
-
-![](D:/Code/myBlog/数据库/Elasticsearch/img/storedField.png)
-
-#### Document Values为了排序，聚合
-
-即使这样，我们发现以上结构仍然无法解决诸如：排序、聚合，因为我们可能会要读取大量不需要的信息。
-
-所以，另一种数据结构解决了此种问题：`Document Values`。这种结构本质上就是一个列式的存储，它高度优化了具有相同类型的数据的存储结构。
-
-![](D:/Code/myBlog/数据库/Elasticsearch/img/docValue.png)
-
-为了提高效率，`ElasticSearch`可以将索引下某一个`Document Value`全部读取到内存中进行操作，这大大提升访问速度，但是也同时会消耗掉大量的内存空间。
-
-总之，这些数据结构`Inverted Index`、`Stored Fields`、`Document Values`及其缓存，都在`segment`内部。
-
-### ES 写入的流程
+## ES 写入的流程
 
 1. 不断将 Document 写入到 In-memory buffer （内存缓冲区）。
 2. 当满足一定条件后内存缓冲区中的 Documents 刷新到 高速缓存（**cache**）。
@@ -221,11 +251,11 @@ Inverted Index主要包括两部分：
 
 ![](D:/Code/myBlog/数据库/Elasticsearch/img/write01.png)
 
-### ES查询过程
+## ES查询过程
 
 在初始查询阶段，查询将广播到索引中每个分片的分片副本（主或副本分片）。每个分片在本地执行搜索，并建立一个匹配文档的优先级队列。
 
-#### 优先队列
+### 优先队列
 
 一个优先级队列仅仅是持有排序列表前 N 个匹配的文件。优先级队列的大小取决于分页参数 `from` 和 `size`。例如，以下搜索请求将需要一个足以容纳 `100` 个文档的优先级队列：
 
@@ -236,7 +266,7 @@ GET / _search
 
 
 
-#### 查询阶段
+### 查询阶段
 
 当一个节点接收到一个搜索请求，则这个节点就变成了协调节点。
 
@@ -246,7 +276,7 @@ GET / _search
 
 协调节点会将所有分片的结果汇总，并进行全局排序，得到最终的查询排序结果。此时查询阶段结束。
 
-#### 取回阶段
+### 取回阶段
 
 查询过程得到的是一个排序结果，标记出哪些文档是符合搜索要求的，此时仍然需要获取这些文档返回客户端。
 
@@ -254,7 +284,7 @@ GET / _search
 
 ![](D:/Code/myBlog/数据库/Elasticsearch/img/es_fetch.png)
 
-#### 深度分页
+### 深度分页
 
 `query-then-fetch`流程支持使用`from`和`size` 参数分页，但限制在范围内。请记住，每个分片必须建立一个长度为优先级的队列`from + size`，所有这些队列都必须传递回协调节点。并且协调节点需要对 `number_of_shards * (from + size)`文档进行排序以找到正确的 `size`文档。
 

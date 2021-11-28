@@ -21,15 +21,19 @@
 
 打开新项目时的默认设置
 
+
+
+Tab -> 右键 -> Editor Tabs
+
 #### 2.1 设置`maven`中`Maven home directory`路径
 
-![idea maven](img/idea/idea01.png)
+![idea maven](img/idea01.png)
 
 #### 2.2 设置`gradle`中路径
 
 `File -> Other Settings -> Settings for New Projects`
 
-![idea maven](img/idea/idea_gradle.png)
+![idea maven](img/idea_gradle.png)
 
 #### 2.3 设置项目 SDK
 
@@ -37,7 +41,7 @@
 
 设置`Project SDK`和`Project language level`
 
-![idea maven](img/idea/idea02.png)
+![idea maven](img/idea02.png)
 
 #### 2.4 设置文件作者
 
@@ -50,7 +54,7 @@
  */
 ```
 
-![idea maven](img/idea/idea03.png)
+![idea maven](img/idea03.png)
 
 #### 2.5 设置上一步快捷键
 
@@ -58,13 +62,13 @@
 
 将`Ctrl + Alt + 左箭头`换成`Ctrl + 左箭头`
 
-![idea_fast_key](img/idea/idea_back_key.png)
+![idea_fast_key](img/idea_back_key.png)
 
 或者清除 windows`ctrl+alt+左箭头`桌面旋转问题
 
 `桌面右键 -> 图形属性 -> 选项和支持 -> 快捷键管理器 -> 禁用快捷键`
 
-![idea_fast_key](img/idea/idea_fast_key.png)
+![idea_fast_key](img/idea_fast_key.png)
 
 ### 3.idea 常用快捷键
 

@@ -1,77 +1,8 @@
 [TOC]
 
-# elasticsearch 控制台
+## 参考
 
-- [https://www.elastic.co/guide/en/elasticsearch/reference/7.8/rest-apis.html](https://www.elastic.co/guide/en/elasticsearch/reference/7.8/rest-apis.html)
-
-```bash
-GET _cat/
-=^.^=
-/_cat/allocation
-/_cat/shards
-/_cat/shards/{index}
-/_cat/master
-/_cat/nodes
-/_cat/tasks
-/_cat/indices
-/_cat/indices/{index}
-/_cat/segments
-/_cat/segments/{index}
-/_cat/count
-/_cat/count/{index}
-/_cat/recovery
-/_cat/recovery/{index}
-/_cat/health
-/_cat/pending_tasks
-/_cat/aliases
-/_cat/aliases/{alias}
-/_cat/thread_pool
-/_cat/thread_pool/{thread_pools}
-/_cat/plugins
-/_cat/fielddata
-/_cat/fielddata/{fields}
-/_cat/nodeattrs
-/_cat/repositories
-/_cat/snapshots/{repository}
-
-# 查看ES信息
-GET /
-{
-  "name" : "node-1",
-  "cluster_name" : "my-application",
-  "cluster_uuid" : "C3Y9KRRdQD-NNchgcrGFQw",
-  "version" : {
-    "number" : "7.14.2",
-    "build_flavor" : "default",
-    "build_type" : "zip",
-    "build_hash" : "6bc13727ce758c0e943c3c21653b3da82f627f75",
-    "build_date" : "2021-09-15T10:18:09.722761972Z",
-    "build_snapshot" : false,
-    "lucene_version" : "8.9.0",
-    "minimum_wire_compatibility_version" : "6.8.0",
-    "minimum_index_compatibility_version" : "6.0.0-beta1"
-  },
-  "tagline" : "You Know, for Search"
-}
-
-# 检测集群是否健康
-GET _cat/health?v
-# 查询集群的节点
-GET _cat/nodes?v
-# 查询所有索引
-GET _cat/indices?v
-# 查询segments信息
-GET /_cat/segments/jd-product?v
-index      shard prirep ip        segment generation docs.count docs.deleted   size size.memory committed searchable version compound
-jd-product 0     p      127.0.0.1 _0               0         50           40  106kb        6132 true      true       8.9.0   true
-jd-product 0     p      127.0.0.1 _1               1         30            0 39.9kb        5868 true      true       8.9.0   true
-jd-product 0     p      127.0.0.1 _2               2         60            0   77kb        5868 true      true       8.9.0   true
-# 如果segment的committed和searchable是false
-# 刷新jd-product数据到磁盘
-POST /jd-product/_flush
-```
-
-
+[Index modules](https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules.html)
 
 ## 1.创建索引
 
@@ -99,10 +30,70 @@ POST /jd-product/_flush
 }
 ```
 
-## 2.查询索引
+## 2.索引设置
 
-- `number_of_shards`,每个索引的主分片数,这个配置在索引创建后不能修改
-- `number_of_replicas`,每个主分片的副本数,这个配置可以随时修改
+### 静态索引设置
+
+**`index.number_of_shards`**
+
+> The number of primary shards that an index should have. Defaults to `1`. This setting can only be set at index creation time. 
+
+### 动态索引设置
+
+**`index.number_of_replicas`**
+
+> The number of replicas each primary shard has. Defaults to 1.
+>
+> ```console
+> PUT /my-index-000001/_settings
+> {
+>   "index" : {
+>     "number_of_replicas" : 2
+>   }
+> }
+> ```
+
+**`index.refresh_interval`**
+
+> How often to perform a refresh operation, which makes recent changes to the index visible to search. Defaults to `1s`. Can be set to `-1` to disable refresh. 
+>
+> 执行刷新操作的频率，这使得最近的数据被搜索到
+
+**`index.max_result_window`**
+
+> The maximum value of `from + size` for searches to this index. Defaults to `10000`. Search requests take heap memory and time proportional to `from + size` and this limits that memory. 
+>
+> 搜索时`from + size`最大的数量,默认是`10000`。
+
+```json
+{
+  "index.search.slowlog.level": "info",
+  "index.search.slowlog.threshold.fetch.warn": "200ms",
+  "index.search.slowlog.threshold.fetch.trace": "50ms",
+  "index.search.slowlog.threshold.fetch.debug": "80ms",
+  "index.search.slowlog.threshold.fetch.info": "100ms",
+  "index.search.slowlog.threshold.query.warn": "500ms",
+  "index.search.slowlog.threshold.query.trace": "50ms",
+  "index.search.slowlog.threshold.query.debug": "100ms",
+  "index.search.slowlog.threshold.query.info": "200ms",
+  "index.refresh_interval": "10s",
+  "index.max_result_window": "10000",
+  "index.number_of_replicas": "1"
+}
+```
+
+
+
+## 新增ES文档
+
+```
+POST book_index2/_doc/1
+{
+	"bookName":"刻意练习"
+}
+```
+
+
 
 ## 修改 Index 类型
 

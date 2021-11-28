@@ -205,6 +205,31 @@ POST my-index-000001/_update/1
     }
   }
 }
+POST jd-product/_update_by_query
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "productName": "牛奶"
+          }
+        },
+        {
+          "term": {
+            "price": {
+              "value": "59.90"
+            }
+          }
+        }
+      ]
+      
+    }
+  },
+  "script": {
+    "source": "ctx._source['price']= null"
+  }
+}
 ```
 
 列表添加数据

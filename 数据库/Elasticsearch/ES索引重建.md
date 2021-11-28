@@ -39,7 +39,7 @@ PUT /my-index-000001
 }
 
 # 推送一条数据
-POST /my-index-000001/_doc
+POST /my-index-000001/_doc/1
 {
   "user_id" : 12345
 }
